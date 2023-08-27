@@ -1,0 +1,19 @@
+{{- if .Values.ingressClassResource.create }}
+apiVersion: networking.k8s.io/v1
+kind: IngressClass
+metadata:
+  name: {{ include "nginx-ingress.fullname" . }}
+  labels:
+    {{- include "nginx-ingress.labels" . | nindent 4 }}
+  annotations: 
+    ingressclass.kubernetes.io/is-default-class: {{ default true .Values.ingressClassResource.default | quote }}
+    {{- if .Values.ingressClassResource.annotations }}
+    {{- toYaml .Values.ingressClassResource.annotations | nindent 4 }}
+    {{- end }}
+spec:
+  controller: {{ required "require controller" .Values.ingressClassResource.controller }}
+  # parameters:
+  #   apiGroup: k8s.example.com
+  #   kind: IngressParameters
+  #   name: external-lb
+{{- end }}

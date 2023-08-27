@@ -6,7 +6,7 @@ metadata:
     {{- include "nginx-ingress.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ default 1 .Values.global.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -35,7 +35,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.service.httpPort }}
+              protocol: TCP
+            - name: https
+              containerPort: {{ .Values.service.httpsPort }}
               protocol: TCP
           livenessProbe:
             httpGet:
