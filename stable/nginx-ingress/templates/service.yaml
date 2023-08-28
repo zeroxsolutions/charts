@@ -8,11 +8,11 @@ spec:
   type: {{ default "LoadBalancer" .Values.service.type }}
   ports:
     - port: {{ .Values.service.httpPort }}
-      targetPort: http
+      targetPort: 80
       protocol: TCP
       name: http
     - port: {{ .Values.service.httpsPort }}
-      targetPort: https
+      targetPort: 443
       protocol: TCP
       name: https
   selector:

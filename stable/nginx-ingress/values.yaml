@@ -4,12 +4,14 @@
 
 global:
   # Override
-  fullname: "nginx"
+  fullname: "nginx-ingress"
 
   # Override
-  name: "nginx"
+  name: "nginx-ingress"
 
   replicaCount: 1
+
+  ingressClass: ""
 
 image:
   repository: nginx/nginx-ingress
@@ -75,12 +77,15 @@ tolerations: []
 
 affinity: {}
 
-ingressClassResource: 
+ingressClassResource:
   create: true
   default: true
-  controller: "example.com/ingress-controller"
+  controller: "nginx.org/ingress-controller"
   annotations: {}
   # - key=value
 
 secret:
   create: false
+
+rbac:
+  create: true

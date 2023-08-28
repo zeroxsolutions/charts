@@ -40,6 +40,8 @@ spec:
             - name: https
               containerPort: {{ .Values.service.httpsPort }}
               protocol: TCP
+          args:
+            - --ingress-class={{ default "nginx-ingress" .Values.global.ingressClass }}
           livenessProbe:
             httpGet:
               path: /
