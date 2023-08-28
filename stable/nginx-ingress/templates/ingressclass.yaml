@@ -11,7 +11,7 @@ metadata:
     {{- toYaml .Values.ingressClassResource.annotations | nindent 4 }}
     {{- end }}
 spec:
-  controller: {{ required "require controller" .Values.ingressClassResource.controller }}
+  controller: {{ .Values.ingressClassResource.controller }}
   # parameters:
   #   apiGroup: k8s.example.com
   #   kind: IngressParameters

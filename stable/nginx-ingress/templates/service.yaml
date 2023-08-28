@@ -1,3 +1,4 @@
+{{- if .Values.controller.service.create }}
 apiVersion: v1
 kind: Service
 metadata:
@@ -5,15 +6,20 @@ metadata:
   labels:
     {{- include "nginx-ingress.labels" . | nindent 4 }}
 spec:
-  type: {{ default "LoadBalancer" .Values.service.type }}
+  type: {{ default "LoadBalancer" .Values.controller.service.type }}
   ports:
-    - port: {{ .Values.service.httpPort }}
-      targetPort: 80
+    {{- if .Values.controller.service.enableHttp }}
+    - port: {{ .Values.controller.service.ports.http }}
+      targetPort: {{ .Values.controller.service.targetPorts.http }}
       protocol: TCP
       name: http
-    - port: {{ .Values.service.httpsPort }}
-      targetPort: 443
+    {{- end }}
+    {{- if .Values.controller.service.enableHttps }}
+    - port: {{ .Values.controller.service.ports.https }}
+      targetPort: {{ .Values.controller.service.targetPorts.https }}
       protocol: TCP
       name: https
+    {{- end }}
   selector:
     {{- include "nginx-ingress.selectorLabels" . | nindent 4 }}
+{{- end }}

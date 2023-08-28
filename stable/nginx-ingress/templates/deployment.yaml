@@ -1,3 +1,4 @@
+{{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -5,7 +6,7 @@ metadata:
   labels:
     {{- include "nginx-ingress.labels" . | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
+  {{- if not .Values.controller.autoscaling.enabled }}
   replicas: {{ default 1 .Values.global.replicaCount }}
   {{- end }}
   selector:
@@ -13,35 +14,44 @@ spec:
       {{- include "nginx-ingress.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.controller.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
         {{- include "nginx-ingress.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.controller.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       serviceAccountName: {{ include "nginx-ingress.serviceAccountName" . }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- toYaml .Values.controller.securityContext | nindent 12 }}
+          image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.controller.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.httpPort }}
+              containerPort: {{ .Values.controller.containerPort.http }}
               protocol: TCP
             - name: https
-              containerPort: {{ .Values.service.httpsPort }}
+              containerPort: {{ .Values.controller.containerPort.https }}
               protocol: TCP
           args:
-            - --ingress-class={{ default "nginx-ingress" .Values.global.ingressClass }}
+            - --ingress-class={{ default "nginx-ingress" .Values.controller.ingressClass }}
+            - --election-id={{ default "ingress-controller-leader" .Values.controller.electionId }}
+            {{- if .Values.controller.scope.enabled }}
+            - --watch-namespace={{ default "$(POD_NAMESPACE)" .Values.controller.scope.namespace }}
+            {{- end }}
+            {{- if .Values.controller.args }}
+            {{- range $index, $arg := .Values.controller.args }}
+            - {{ $arg }}
+            {{- end }}
+            {{- end }}
           livenessProbe:
             httpGet:
               path: /
@@ -51,16 +61,17 @@ spec:
               path: /
               port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+            {{- toYaml .Values.controller.resources | nindent 12 }}
+      {{- with .Values.controller.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.controller.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.controller.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}

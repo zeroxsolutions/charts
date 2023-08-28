@@ -1,91 +1,121 @@
-# Default values for nginx-ingress.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 global:
-  # Override
   fullname: "nginx-ingress"
 
-  # Override
   name: "nginx-ingress"
 
   replicaCount: 1
 
+controller:
+  image:
+    repository: nginx/nginx-ingress
+    pullPolicy: IfNotPresent
+    tag: "3.2"
+
+  labels: {}
+
+  # Deployment, DaemonSet or Both 
+  kind: Deployment
+
+  args: 
+
+  # Ingress class resource default nginx-ingress
   ingressClass: ""
 
-image:
-  repository: nginx/nginx-ingress
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: "3.2"
+  # Election Id resource default ingress-controller-leader
+  electionId: ""
 
-imagePullSecrets: []
-
-# Service account
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
 
-podAnnotations: {}
+  imagePullSecrets: []
 
-podSecurityContext:
-  {}
-  # fsGroup: 2000
+  podAnnotations: {}
 
-securityContext:
-  {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  podSecurityContext:
+    {}
+  
+  # Security Context configuration
+  securityContext:
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
 
-service:
-  type: LoadBalancer
-  httpPort: 80
-  httpsPort: 443
+  # Config container nginx-ingress-controller listens on 80 & 443
+  containerPort: 
+    http: 80
+    https: 443
+  
+  # Service configuration
+  service:
+    create: true
+    # Type of service default LoadBalancer
+    type: ""
+    enableHttp: true
+    enableHttps: true
+    targetPorts:
+      http: 80 
+      https: 443
 
-resources:
-  {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+    ports: 
+      http: 80 
 
-autoscaling:
-  enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+      https: 443
 
-nodeSelector: {}
+  nodeSelector: {}
 
-tolerations: []
+  tolerations: []
 
-affinity: {}
+  affinity: {}
+
+  # Resources limit & request configuration
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+
+  # Autoscaling Deployment
+  autoscaling:
+    enabled: false
+    minReplicas: 1
+    # Nullable
+    maxReplicas: 100
+    targetCPUUtilizationPercentage: 80
+    targetMemoryUtilizationPercentage: 80
+
+  scope:
+    enabled: true
+    namespace: 
+  
+  secret: 
+    create: false
+    tls:
+      crt:
+      key: 
+    type: ""
+
 
 ingressClassResource:
   create: true
+  
   default: true
+  
   controller: "nginx.org/ingress-controller"
+  
   annotations: {}
-  # - key=value
 
-secret:
-  create: false
+# Service Account
+serviceAccount:
+  create: true
+
+  annotations: 
+
+  name: ""
 
 rbac:
   create: true
+  scope: false

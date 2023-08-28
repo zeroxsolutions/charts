@@ -48,7 +48,6 @@ Selector labels
 {{- define "nginx-ingress.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "nginx-ingress.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/component: controller
 {{- end }}
 
 {{/*

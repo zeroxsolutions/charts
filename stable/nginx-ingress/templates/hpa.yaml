@@ -1,4 +1,4 @@
-{{- if .Values.autoscaling.enabled }}
+{{- if and .Values.controller.autoscaling.enabled (or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both")) }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -10,25 +10,25 @@ spec:
     apiVersion: apps/v1
     kind: Deployment
     name: {{ include "nginx-ingress.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  {{- if .Values.autoscaling and .Values.autoscaling.maxReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.controller.autoscaling.minReplicas }}
+  {{- if .Values.controller.autoscaling and .Values.controller.autoscaling.maxReplicas }}
+  maxReplicas: {{ .Values.controller.autoscaling.maxReplicas }}
   {{- end }}
   metrics:
-    {{- if .Values.autoscaling and .Values.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.controller.autoscaling and .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ default 80 | .Values.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ default 80 | .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
     {{- end }}
-    {{- if .Values.autoscaling and .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.controller.autoscaling and .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ default 80 | .Values.autoscaling.targetMemoryUtilizationPercentage }}
+          averageUtilization: {{ default 80 | .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}
