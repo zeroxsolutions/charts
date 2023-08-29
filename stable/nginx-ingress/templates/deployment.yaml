@@ -14,6 +14,7 @@ spec:
       {{- include "nginx-ingress.selectorLabels" . | nindent 6 }}
   template:
     metadata:
+      name: {{ include "nginx-ingress.fullname" . }}
       {{- with .Values.controller.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
@@ -29,7 +30,7 @@ spec:
       securityContext:
         {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ include "nginx-ingress.fullname" . }}
           securityContext:
             {{- toYaml .Values.controller.securityContext | nindent 12 }}
           image: "{{ .Values.controller.image.repository }}:{{ .Values.controller.image.tag | default .Chart.AppVersion }}"
@@ -42,16 +43,28 @@ spec:
               containerPort: {{ .Values.controller.containerPort.https }}
               protocol: TCP
           args:
+            # - /nginx-ingress-controller
+            # - --master
             - --ingress-class={{ default "nginx-ingress" .Values.controller.ingressClass }}
-            - --election-id={{ default "ingress-controller-leader" .Values.controller.electionId }}
+            # - --controller-class={{ .Values.ingressClassResource.controller }}
+            # - --election-id={{ default "ingress-controller-leader" .Values.controller.electionId }}
             {{- if .Values.controller.scope.enabled }}
-            - --watch-namespace={{ default "$(POD_NAMESPACE)" .Values.controller.scope.namespace }}
+            - --watch-namespace={{ default .Release.Namespace .Values.controller.scope.namespace }}
             {{- end }}
             {{- if .Values.controller.args }}
             {{- range $index, $arg := .Values.controller.args }}
             - {{ $arg }}
             {{- end }}
             {{- end }}
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           livenessProbe:
             httpGet:
               path: /

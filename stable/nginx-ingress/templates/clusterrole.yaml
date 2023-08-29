@@ -6,101 +6,78 @@ metadata:
   labels:
     {{- include "nginx-ingress.labels" . | nindent 4 }}
 rules:
+  - apiGroups:
+      - k8s.nginx.org
+    resources:
+      - virtualserverroutes
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - k8s.nginx.org
+    resources:
+      - policies
+    verbs:
+      - get
+      - list
+      - watch
   - apiGroups: 
-      - extensions
       - networking.k8s.io
     resources:
       - ingressclasses
     verbs:
       - get
-      - list
-      - watch
-  - apiGroups: 
+    resourceNames:
+      - {{ default "nginx-ingress" .Values.controller.ingressClass }}
+  - apiGroups:
       - ""
     resources:
-      - configmaps
+      - secrets
+      - services
     verbs:
       - get
       - list
       - watch
-  - apiGroups: 
+  - apiGroups:
+      - discovery.k8s.io
+    resources:
+      - endpointslices
+    verbs:
+      - list
+      - watch
+  - apiGroups:
+      - networking.k8s.io
+    resources:
+      - ingresses
+    verbs:
+      - list
+      - watch
+  - apiGroups:
       - ""
     resources:
       - pods
     verbs:
       - get
       - list
-      - watch
-  - apiGroups:
-      - ""
-    resources:
-      - endpoints
-    verbs:
-      - get
-      - list
-      - watch
-  - apiGroups:
-      - extensions
-      - networking.k8s.io
-    resources:
-      - ingresses/status
-    verbs:
       - update
-  - apiGroups:
-      - ""
-    resources:
-      - nodes
-    verbs:
-      - get
-      - list
       - watch
   - apiGroups:
-      - ""
-    resources:
-      - secrets
+      - k8s.nginx.org
+    resources: 
+      - virtualservers
     verbs:
       - list
       - watch
   - apiGroups:
-      - extensions
-      - networking.k8s.io
-    resources:
-      - ingresses
+      - k8s.nginx.org
+    resources: 
+      - transportservers
     verbs:
-      - get
       - list
-      - watch
   - apiGroups:
       - ""
     resources:
-      - events
-    verbs:
-      - create
-      - patch
-  - apiGroups:
-      - discovery.k8s.io
-    resources:
-      - endpointslices
+      - configmaps
     verbs:
       - get
-      - list
-      - watch
-  - apiGroups:
-      - ""
-    resources:
-      - services
-    verbs:
-      - get
-      - list
-      - watch
-  {{- if .Values.controller.scope.enabled }}
-  - apiGroups:
-      - ""
-    resources:
-      - namespaces
-    resourceNames:
-      - "{{ default .Release.Namespace .Values.controller.scope.namespace }}"
-    verbs:
-      - get
-  {{- end }}
 {{- end }}

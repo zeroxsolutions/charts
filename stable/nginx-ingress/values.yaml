@@ -71,12 +71,12 @@ controller:
 
   # Resources limit & request configuration
   resources:
-    limits:
-      cpu: 100m
-      memory: 128Mi
-    requests:
-      cpu: 100m
-      memory: 128Mi
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
 
   # Autoscaling Deployment
   autoscaling:
@@ -88,7 +88,7 @@ controller:
     targetMemoryUtilizationPercentage: 80
 
   scope:
-    enabled: true
+    enabled: false
     namespace: 
   
   secret: 
