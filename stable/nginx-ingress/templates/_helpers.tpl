@@ -1,8 +1,10 @@
+{{/* vim: set filetype=mustache: */}}
+
 {{/*
 Expand the name of the chart.
 */}}
 {{- define "nginx-ingress.name" -}}
-{{- default .Chart.Name .Values.global.name | trunc 63 | trimSuffix "-" }}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
@@ -11,10 +13,10 @@ We truncate at 63 chars because some Kubernetes name fields are limited to this 
 If release name contains chart name it will be used as a full name.
 */}}
 {{- define "nginx-ingress.fullname" -}}
-{{- if .Values.global.fullname }}
-{{- .Values.global.fullname | trunc 63 | trimSuffix "-" }}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
-{{- $name := default .Chart.Name .Values.global.name }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
 {{- if contains $name .Release.Name }}
 {{- .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -22,6 +24,22 @@ If release name contains chart name it will be used as a full name.
 {{- end }}
 {{- end }}
 {{- end }}
+
+{{/*
+Create a default fully qualified controller name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "nginx-ingress.controller.fullname" -}}
+{{- printf "%s-%s" (include "nginx-ingress.fullname" .) .Values.controller.name | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
+
+{{/*
+Create a default fully qualified controller service name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "nginx-ingress.controller.service.name" -}}
+{{- default (include "nginx-ingress.controller.fullname" .) .Values.serviceNameOverride | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 
 {{/*
 Create chart name and version as used by the chart label.
@@ -46,17 +64,68 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "nginx-ingress.selectorLabels" -}}
+{{- if .Values.controller.selectorLabels -}}
+{{ toYaml .Values.controller.selectorLabels }}
+{{- else -}}
 app.kubernetes.io/name: {{ include "nginx-ingress.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-{{- end }}
+{{- end -}}
+{{- end -}}
 
 {{/*
-Create the name of the service account to use
+Expand the name of the configmap.
+*/}}
+{{- define "nginx-ingress.configName" -}}
+{{- if .Values.controller.customConfigMap -}}
+{{ .Values.controller.customConfigMap }}
+{{- else -}}
+{{- default (include "nginx-ingress.fullname" .) .Values.controller.config.name -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Expand leader election lock name.
+*/}}
+{{- define "nginx-ingress.leaderElectionName" -}}
+{{- if .Values.controller.reportIngressStatus.leaderElectionLockName -}}
+{{ .Values.controller.reportIngressStatus.leaderElectionLockName }}
+{{- else -}}
+{{- printf "%s-%s" (include "nginx-ingress.fullname" .) "leader-election" -}}
+{{- end -}}
+{{- end -}}
+
+{{/*
+Expand service account name.
 */}}
 {{- define "nginx-ingress.serviceAccountName" -}}
-{{- if .Values.serviceAccount.create }}
-{{- default (include "nginx-ingress.fullname" .) .Values.serviceAccount.name }}
-{{- else }}
-{{- default "default" .Values.serviceAccount.name }}
-{{- end }}
-{{- end }}
+{{- default (include "nginx-ingress.fullname" .) .Values.controller.serviceAccount.name -}}
+{{- end -}}
+
+{{/*
+Expand default TLS name.
+*/}}
+{{- define "nginx-ingress.defaultTLSName" -}}
+{{- printf "%s-%s" (include "nginx-ingress.fullname" .) "default-server-tls" -}}
+{{- end -}}
+
+{{/*
+Expand wildcard TLS name.
+*/}}
+{{- define "nginx-ingress.wildcardTLSName" -}}
+{{- printf "%s-%s" (include "nginx-ingress.fullname" .) "wildcard-tls" -}}
+{{- end -}}
+
+{{- define "nginx-ingress.tag" -}}
+{{- default .Chart.AppVersion .Values.controller.image.tag -}}
+{{- end -}}
+
+{{/*
+Expand image name.
+*/}}
+{{- define "nginx-ingress.image" -}}
+{{- if .Values.controller.image.digest -}}
+{{- printf "%s@%s" .Values.controller.image.repository .Values.controller.image.digest -}}
+{{- else -}}
+{{- printf "%s:%s" .Values.controller.image.repository (include "nginx-ingress.tag" .) -}}
+{{- end -}}
+{{- end -}}
