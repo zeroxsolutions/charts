@@ -1,0 +1,17 @@
+# Copyright ZeroX.
+apiVersion: v2
+name: common
+description: common library helm charts
+type: application
+version: 1.0.0
+appVersion: "1.0.0"
+home: https://zerox-solutions.org
+keywords:
+  - "common"
+  - "library"
+  - "template"
+annotations:
+  category: "infrastructure"
+maintainers:
+  - name: ZeroX
+    url: https://github.com/zerox-solutions/charts
