@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "nginx-ingress.name" -}}
+{{- define "memcached.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "nginx-ingress.fullname" -}}
+{{- define "memcached.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "nginx-ingress.chart" -}}
+{{- define "memcached.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "nginx-ingress.labels" -}}
-helm.sh/chart: {{ include "nginx-ingress.chart" . }}
-{{ include "nginx-ingress.selectorLabels" . }}
+{{- define "memcached.labels" -}}
+helm.sh/chart: {{ include "memcached.chart" . }}
+{{ include "memcached.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "nginx-ingress.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "nginx-ingress.name" . }}
+{{- define "memcached.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "memcached.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "nginx-ingress.serviceAccountName" -}}
+{{- define "memcached.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "nginx-ingress.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "memcached.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
