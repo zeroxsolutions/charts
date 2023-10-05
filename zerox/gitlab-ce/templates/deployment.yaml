@@ -69,8 +69,8 @@ spec:
                 configMapKeyRef:
                   name: {{ include "common.fullname" . }}
                   key: GITLAB_OMNIBUS_CONFIG
-            {{- if .Values.controller.extraEnv }}
-            {{ toYaml .Values.controller.extraEnv | nindent 12 }}
+            {{- if .Values.controller.extraEnvs }}
+            {{ toYaml .Values.controller.extraEnvs | nindent 12 }}
             {{- end }}
           {{- if .Values.controller.resources }}
           resources:

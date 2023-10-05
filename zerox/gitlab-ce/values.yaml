@@ -33,7 +33,11 @@ controller:
   #     configMapKeyRef(secretKeyRef):
   #       name:  ""
   #       key: ""
-  extraEnv: []
+  extraEnvs: []
+  # Extra configurations
+  # extraConfigs: |
+  #   letsencrypt['contact_emails'] = ['*'] # Optional
+  extraConfigs: ""
   # (Controller port) HTTP port
   httpPort: 80
   # SSH port
@@ -72,8 +76,8 @@ controller:
   tolerations:
   # Service of controller configuration  
   service:
-    # Service type ClusterIP, LoadBalancer, NodePort
-    type: LoadBalancer
+    # Service type ClusterIP, LoadBalancer, NodePort default (LoadBalancer)
+    type: ""
     # HTTP port
     httpPort: 80
     # SSH Port
@@ -109,12 +113,12 @@ ingress:
   enabled: true
   # Annotations
   annotations:
-    kubernetes.io/ingress.class: nginx
+    # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Ingress class name
   className: ""
   # Host configuration
-  host: gitlab.zeroxsolutions.com
+  host: ""
   # TLS configuration
   tlsConfig:
     # Enable TLS

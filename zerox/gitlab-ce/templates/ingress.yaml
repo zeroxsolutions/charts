@@ -4,7 +4,7 @@ Copyright ZeroX
 {{- if and .Values.ingress.enabled (eq .Values.controller.kind "development") -}}
 {{- $fullName := include "common.fullname" . -}}
 {{- $svcHttpPort := .Values.controller.service.httpPort -}}
-{{- $svcSshPort := .Values.controller.service.httpPort -}}
+{{- $svcSshPort := .Values.controller.service.sshPort -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
@@ -41,10 +41,8 @@ spec:
     - host: {{ .Values.ingress.host | quote }}
       http:
         paths:
+          {{- if $svcHttpPort }}
           - path: /
-            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
-            pathType: ImplementationSpecific
-            {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
@@ -55,16 +53,24 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcHttpPort }}
               {{- end }}
-          # - pathType: ImplementationSpecific
-          #   backend:
-          #     {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
-          #     service:
-          #       name: {{ $fullName }}
-          #       port:
-          #         number: {{ $svcSshPort }}
-          #     {{- else }}
-          #     serviceName: {{ $fullName }}
-          #     servicePort: {{ $svcSshPort }}
-          #     {{- end }}
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: ImplementationSpecific
+            {{- end }}
+          {{- end }}
+          {{- if $svcSshPort }}
+          - backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcSshPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcSshPort }}
+              {{- end }}
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: ImplementationSpecific
+            {{- end }}
+          {{- end }}
     {{- end }}
 {{- end }}

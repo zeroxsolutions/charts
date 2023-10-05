@@ -8,7 +8,7 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.controller.service.type }}
+  type: {{ .Values.controller.service.type | default "LoadBalancer" }}
   ports:
     {{- if and .Values.controller.service.httpPort .Values.controller.httpPort }}
     - port: {{ .Values.controller.service.httpPort }}
