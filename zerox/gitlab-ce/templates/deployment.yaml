@@ -1,61 +1,91 @@
+{{- /*
+Copyright ZeroX
+*/}}
+{{- if eq .Values.controller.kind "development" }}
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "gitlab-ce.fullname" . }}
+  name: {{ include "common.fullname" . }}
   labels:
-    {{- include "gitlab-ce.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.controller.replaceCount | default 1 }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "gitlab-ce.selectorLabels" . | nindent 6 }}
+      {{- include "common.selectorLabels" . | nindent 6 }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with .Values.controller.podAnnotations }}
       annotations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "gitlab-ce.selectorLabels" . | nindent 8 }}
+        {{- include "common.selectorLabels" . | nindent 8 }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with .Values.controller.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "gitlab-ce.serviceAccountName" . }}
+      serviceAccountName: {{ include "common.serviceAccountName" . }}
+      {{- if .Values.controller.podSecurityContext }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
+      {{- end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+            {{- toYaml .Values.controller.securityContext | nindent 12 }}
+          image: "{{ .Values.controller.registry | default "docker.io" }}/{{ required "require image tag" .Values.controller.image }}:{{ .Values.controller.version | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.controller.pullPolicy | default "IfNotPresent" }}
           ports:
+            {{- if .Values.controller.httpPort }}
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ .Values.controller.httpPort }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            {{- end }}
+            {{- if .Values.controller.sshPort }}
+            - name: ssh
+              containerPort: {{ .Values.controller.sshPort }}
+              protocol: TCP
+            {{- end }}
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          env:
+            - name: GITLAB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "common.fullname" . }}
+                  key: GITLAB_ROOT_PASSWORD
+            - name: GITLAB_OMNIBUS_CONFIG
+              valueFrom: 
+                configMapKeyRef:
+                  name: {{ include "common.fullname" . }}
+                  key: GITLAB_OMNIBUS_CONFIG
+            {{- if .Values.controller.extraEnv }}
+            {{ toYaml .Values.controller.extraEnv | nindent 12 }}
+            {{- end }}
+          {{- if .Values.controller.resources }}
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-      {{- with .Values.nodeSelector }}
+            {{- toYaml .Values.controller.resources | nindent 12 }}
+          {{- end }}
+      {{- with .Values.controller.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with .Values.controller.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with .Values.controller.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}

@@ -1,6 +1,13 @@
-{{/*
+{{- /*
 Copyright ZeroX
 */}}
+
+{{/*
+Expand the name of the chart.
+*/}}
+{{- define "common.name" -}}
+{{- default .Chart.Name .Values.global.name | trunc 63 | trimSuffix "-" }}
+{{- end }}
 
 {{/*
 Create a default fully qualified app name.

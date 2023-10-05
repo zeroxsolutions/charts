@@ -1,15 +1,26 @@
+{{- /*
+Copyright ZeroX
+*/}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "gitlab-ce.fullname" . }}
+  name: {{ include "common.fullname" . }}
   labels:
-    {{- include "gitlab-ce.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.controller.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    {{- if and .Values.controller.service.httpPort .Values.controller.httpPort }}
+    - port: {{ .Values.controller.service.httpPort }}
       targetPort: http
       protocol: TCP
       name: http
+    {{- end }}
+    {{- if and .Values.controller.service.sshPort .Values.controller.sshPort }}
+    - port: {{ .Values.controller.service.sshPort }}
+      targetPort: ssh
+      protocol: TCP
+      name: ssh
+    {{- end }}
   selector:
-    {{- include "gitlab-ce.selectorLabels" . | nindent 4 }}
+    {{- include "common.selectorLabels" . | nindent 4 }}

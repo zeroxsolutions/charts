@@ -1,2 +1,6 @@
 .DS_Store
+Chart.lock
+*.tgz
+# IDE
+.idea
 .vscode

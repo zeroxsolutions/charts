@@ -1,0 +1,15 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  GITLAB_OMNIBUS_CONFIG: |
+    {{- if .Values.controller.externalUrl }}
+    external_url {{ printf "%s:%s" .Values.controller.externalUrl ( .Values.controller.httpPort | default 80 ) | quote }}
+    {{- end }}
+    {{- if .Values.controller.service.sshPort }}
+    gitlab_rails['gitlab_shell_ssh_port'] = {{ .Values.controller.service.sshPort | default 22 }}
+    {{- end }}
+    # Add any other gitlab.rb configuration here, each on its own line
+    

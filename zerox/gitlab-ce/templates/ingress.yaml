@@ -1,6 +1,10 @@
-{{- if .Values.ingress.enabled -}}
-{{- $fullName := include "gitlab-ce.fullname" . -}}
-{{- $svcPort := .Values.service.port -}}
+{{- /*
+Copyright ZeroX
+*/}}
+{{- if and .Values.ingress.enabled (eq .Values.controller.kind "development") -}}
+{{- $fullName := include "common.fullname" . -}}
+{{- $svcHttpPort := .Values.controller.service.httpPort -}}
+{{- $svcSshPort := .Values.controller.service.httpPort -}}
 {{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
@@ -17,7 +21,7 @@ kind: Ingress
 metadata:
   name: {{ $fullName }}
   labels:
-    {{- include "gitlab-ce.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -26,36 +30,41 @@ spec:
   {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
   ingressClassName: {{ .Values.ingress.className }}
   {{- end }}
-  {{- if .Values.ingress.tls }}
+  {{- if and .Values.ingress.tlsConfig.enabled .Values.ingress.host }}
   tls:
-    {{- range .Values.ingress.tls }}
     - hosts:
-        {{- range .hosts }}
-        - {{ . | quote }}
-        {{- end }}
-      secretName: {{ .secretName }}
-    {{- end }}
+        - {{ .Values.ingress.host }}
+      secretName: {{ $fullName }}-tls
   {{- end }}
   rules:
-    {{- range .Values.ingress.hosts }}
-    - host: {{ .host | quote }}
+    {{- if .Values.ingress.host }}
+    - host: {{ .Values.ingress.host | quote }}
       http:
         paths:
-          {{- range .paths }}
-          - path: {{ .path }}
-            {{- if and .pathType (semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion) }}
-            pathType: {{ .pathType }}
+          - path: /
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: ImplementationSpecific
             {{- end }}
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
                 name: {{ $fullName }}
                 port:
-                  number: {{ $svcPort }}
+                  number: {{ $svcHttpPort }}
               {{- else }}
               serviceName: {{ $fullName }}
-              servicePort: {{ $svcPort }}
+              servicePort: {{ $svcHttpPort }}
               {{- end }}
-          {{- end }}
+          # - pathType: ImplementationSpecific
+          #   backend:
+          #     {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+          #     service:
+          #       name: {{ $fullName }}
+          #       port:
+          #         number: {{ $svcSshPort }}
+          #     {{- else }}
+          #     serviceName: {{ $fullName }}
+          #     servicePort: {{ $svcSshPort }}
+          #     {{- end }}
     {{- end }}
 {{- end }}
