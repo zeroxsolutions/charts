@@ -1,0 +1,26 @@
+{{- /*
+Copyright ZeroX
+*/}}
+{{- if .Values.controller.ssh.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "common.fullname" . }}-ssh
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.controller.ssh.type | default "NodePort" }}
+  ports:
+    - port: {{ .Values.controller.ssh.port | default 22 }}
+      targetPort: ssh
+      protocol: TCP
+      name: ssh
+      {{- if and ( eq ( .Values.controller.ssh.type | default "NodePort" ) "NodePort" ) }}
+      nodePort: {{ .Values.controller.ssh.nodePort | default 30022 }}
+      {{- end }}
+    {{- if and ( eq .Values.controller.ssh.type "ClusterIP" ) .Values.controller.ssh.clusterIP }}
+    clusterIP: {{ .Values.controller.ssh.clusterIP }}
+    {{- end }}
+  selector:
+    {{- include "common.selectorLabels" . | nindent 4 }}
+{{- end }}

@@ -45,9 +45,9 @@ spec:
               containerPort: {{ .Values.controller.httpPort }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.controller.sshPort }}
+            {{- if .Values.controller.ssh.enabled }}
             - name: ssh
-              containerPort: {{ .Values.controller.sshPort }}
+              containerPort: {{ .Values.controller.ssh.port }}
               protocol: TCP
             {{- end }}
           # livenessProbe:
@@ -58,17 +58,12 @@ spec:
           #   httpGet:
           #     path: /
           #     port: http
+          envFrom:
+            - configMapRef:
+                name: {{ include "common.fullname" . }}
+            - secretRef: 
+                name: {{ include "common.fullname" . }}
           env:
-            - name: GITLAB_ROOT_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "common.fullname" . }}
-                  key: GITLAB_ROOT_PASSWORD
-            - name: GITLAB_OMNIBUS_CONFIG
-              valueFrom: 
-                configMapKeyRef:
-                  name: {{ include "common.fullname" . }}
-                  key: GITLAB_OMNIBUS_CONFIG
             {{- if .Values.controller.extraEnvs }}
             {{ toYaml .Values.controller.extraEnvs | nindent 12 }}
             {{- end }}

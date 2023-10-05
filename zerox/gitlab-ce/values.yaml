@@ -80,10 +80,22 @@ controller:
     type: ""
     # HTTP port
     httpPort: 80
-    # SSH Port
-    sshPort: 22
     # ClusterIP with service type ClusterIP
-    clusterIP:
+    clusterIP: ""
+    # Node port configuration
+    nodePort: 30080
+  # SSH configuration
+  ssh: 
+    # Enable SSH protocol
+    enabled: true 
+    # Service type ClusterIP, NodePort default (NodePort)
+    type: ""
+    # SSH Port
+    port: 22
+    # ClusterIP with service type ClusterIP
+    clusterIP: ""
+    # Node port configuration
+    nodePort: 30022
   # Service account configuration
   serviceAccount:
     # Create new service account
