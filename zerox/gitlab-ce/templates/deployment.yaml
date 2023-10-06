@@ -45,11 +45,6 @@ spec:
               containerPort: {{ .Values.controller.httpPort }}
               protocol: TCP
             {{- end }}
-            {{- if .Values.controller.ssh.enabled }}
-            - name: ssh
-              containerPort: {{ .Values.controller.ssh.port }}
-              protocol: TCP
-            {{- end }}
           # livenessProbe:
           #   httpGet:
           #     path: /

@@ -8,9 +8,6 @@ data:
     {{- if .Values.controller.externalUrl }}
     external_url '{{ .Values.controller.externalUrl }}'
     {{- end }}
-    {{- if .Values.controller.ssh.enabled }}
-    gitlab_rails['gitlab_shell_ssh_port'] = {{ .Values.controller.ssh.port | default 22 }}
-    {{- end }}
     {{- if .Values.controller.httpPort }}
     gitlab_rails['gitlab_port'] = {{ .Values.controller.httpPort }}
     {{- end }}
@@ -18,3 +15,4 @@ data:
     {{- if .Values.controller.extraConfigs }}
     {{ .Values.controller.extraConfigs | nindent 4 }}
     {{- end }}
+    gitlab_rails['gitlab_shell_ssh_port'] = nil
