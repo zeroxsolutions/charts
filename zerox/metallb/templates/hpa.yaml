@@ -1,18 +1,15 @@
-{{- /*
-Copyright ZeroX
-*/}}
-{{- if and .Values.autoscaling.enabled ( eq .Values.controller.kind "development" ) }}
+{{- if .Values.autoscaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "metallb.fullname" . }}
   labels:
-    {{- include "common.labels" . | nindent 4 }}
+    {{- include "metallb.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "common.fullname" . }}
+    name: {{ include "metallb.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

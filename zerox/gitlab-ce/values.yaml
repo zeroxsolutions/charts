@@ -125,3 +125,13 @@ ingress:
     crt: ""
     # TLS key 
     key: ""
+
+# Internal PostgreSQL configuration
+postgres:
+  # Enable PostgreSQL
+  enabled: false
+  #   
+
+
+
+# Internal Redis configuration
