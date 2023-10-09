@@ -1,10 +1,10 @@
 # Copyright ZeroX.
 apiVersion: v2
 name: gitlab-ce
-description: citLab community helm chart setup
+description: GitLab Community Helm chart setup
 type: application
 version: 1.0.0
-appVersion: "1.16.0"
+appVersion: "16.2.8-ce.0"
 home: https://zeroxsolutions.com
 keywords:
   - "gitlab"

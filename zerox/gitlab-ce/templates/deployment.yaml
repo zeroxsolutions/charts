@@ -28,6 +28,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      hostNetwork: {{ .Values.controller.hostNetwork | default false }}
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       {{- if .Values.controller.podSecurityContext }}
       securityContext:
@@ -43,6 +44,11 @@ spec:
             {{- if .Values.controller.httpPort }}
             - name: http
               containerPort: {{ .Values.controller.httpPort }}
+              protocol: TCP
+            {{- end }}
+            {{- if and .Values.controller.hostNetwork .Values.controller.ssh.enabled  }}
+            - name: ssh
+              containerPort: {{ .Values.controller.ssh.sshPort | default 22 }}
               protocol: TCP
             {{- end }}
           # livenessProbe:

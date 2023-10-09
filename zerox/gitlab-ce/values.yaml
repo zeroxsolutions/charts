@@ -6,6 +6,8 @@ global:
   fullname: "gitlab"
   # Name override
   name: "gitlab"
+  # Kube version
+  kubeVersion: ""
 
 # Controller
 controller:
@@ -16,11 +18,13 @@ controller:
   # Image name
   image: "gitlab/gitlab-ce"
   # Version image default Chart app version
-  version: "latest"
+  version: "16.2.8-ce.0"
   # Pull policy default IfNotPresent
   pullPolicy: "IfNotPresent"
   # Replica count
   replicaCount: 1
+  # Host network
+  hostNetwork: false
   # GitLab root password (default random)
   password: ""
   # External URL (SSH host)
@@ -40,6 +44,12 @@ controller:
   extraConfigs: ""
   # (Controller port) HTTP port
   httpPort: 80
+  # SSH configuration
+  ssh: 
+    # Enable SSH
+    enabled: false
+    # SSH port
+    sshPort: 22
   # Pod annotations
   podAnnotations: {}
   # Image pull secrets
@@ -108,7 +118,7 @@ autoscaling:
 # Ingress configuration (Option)
 ingress:
   # Enable ingress
-  enabled: true
+  enabled: false
   # Annotations
   annotations:
     # kubernetes.io/ingress.class: nginx
@@ -126,12 +136,14 @@ ingress:
     # TLS key 
     key: ""
 
-# Internal PostgreSQL configuration
-postgres:
-  # Enable PostgreSQL
+# Network Policy
+networkPolicy: 
+  # Enabled network policy
   enabled: false
-  #   
 
-
-
-# Internal Redis configuration
+# Pod Disruption Budget
+pdb:
+  # Enabled pod disruption budget
+  enabled: false
+  # Min available
+  minAvailable: 1
