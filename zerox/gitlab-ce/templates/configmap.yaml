@@ -12,11 +12,6 @@ data:
     gitlab_rails['gitlab_port'] = {{ .Values.controller.httpPort }}
     {{- end }}
     # Add any other gitlab.rb configuration here, each on its own line
-    {{- if .Values.controller.extraConfigs }}
-    {{ .Values.controller.extraConfigs | nindent 4 }}
-    {{- end }}
-    {{- if and .Values.controller.hostNetwork .Values.controller.ssh.enabled  }}
-    gitlab_rails['gitlab_shell_ssh_port'] = {{ .Values.controller.ssh.sshPort | default 22 }}
-    {{- else }}
-    gitlab_rails['gitlab_shell_ssh_port'] = nil
-    {{- end }}
+  {{-  with.Values.controller.extraConfigs }}
+  {{- toYaml . | nindent 2 }}
+  {{- end }}

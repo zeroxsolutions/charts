@@ -1,0 +1,14 @@
+{{- /*
+Copyright ZeroX
+*/}}
+{{- if .Values.pv.create }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ include "common.fullname" . }}
+spec:
+  storageClassName: {{ .Values.pvc.storageClassName | default "" }} 
+  claimRef:
+    name: {{ .Values.pv.claimRef.name | default ( include "common.fullname" . )  }}
+    namespace: {{ .Values.pv.claimRef.namespace | default .Release.Namespace }}
+{{- end }}

@@ -46,11 +46,6 @@ spec:
               containerPort: {{ .Values.controller.httpPort }}
               protocol: TCP
             {{- end }}
-            {{- if and .Values.controller.hostNetwork .Values.controller.ssh.enabled  }}
-            - name: ssh
-              containerPort: {{ .Values.controller.ssh.sshPort | default 22 }}
-              protocol: TCP
-            {{- end }}
           # livenessProbe:
           #   httpGet:
           #     path: /
@@ -72,6 +67,32 @@ spec:
           resources:
             {{- toYaml .Values.controller.resources | nindent 12 }}
           {{- end }}
+          volumeMounts:
+            - mountPath: /etc/gitlab
+              name: gitlab-home
+              subPath: config
+            - mountPath: /var/log/gitlab
+              name: gitlab-home
+              subPath: logs
+            - mountPath: /var/opt/gitlab
+              name: gitlab-home
+              subPath: data
+          {{- with .Values.controller.extraVolumeMounts }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      volumes:
+        - name: gitlab-home
+          {{- if or .Values.pvc.create .Values.controller.persistentVolumeClaim }}
+          persistentVolumeClaim:
+            claimName: {{ .Values.controller.persistentVolumeClaim | default ( include "common.fullname" . ) }}
+          {{- else }}
+          hostPath:
+            path: {{ .Values.controller.volumeHostPath | default "/tmp/gitlab" }}
+            type: {{ .Values.controller.volumeType | default "DirectoryOrCreate" }}
+          {{- end }}
+      {{- with .Values.controller.extraVolumes }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
       {{- with .Values.controller.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

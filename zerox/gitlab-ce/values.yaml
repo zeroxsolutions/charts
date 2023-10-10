@@ -27,7 +27,7 @@ controller:
   hostNetwork: false
   # GitLab root password (default random)
   password: ""
-  # External URL (SSH host)
+  # External URL
   externalUrl: ""
   # Extra environment variables
   # - name: ""
@@ -39,17 +39,10 @@ controller:
   #       key: ""
   extraEnvs: []
   # Extra configurations
-  # extraConfigs: |
-  #   letsencrypt['contact_emails'] = ['*'] # Optional
-  extraConfigs: ""
+  # Key: Value # Optional
+  extraConfigs: []
   # (Controller port) HTTP port
   httpPort: 80
-  # SSH configuration
-  ssh: 
-    # Enable SSH
-    enabled: false
-    # SSH port
-    sshPort: 22
   # Pod annotations
   podAnnotations: {}
   # Image pull secrets
@@ -65,7 +58,7 @@ controller:
     # readOnlyRootFilesystem: true
     # runAsNonRoot: true
     # runAsUser: 1000
-  resources: 
+  resources: {}
     # We usually recommend not to specify default resources and to leave this as a conscious
     # choice for the user. This also increases chances charts run on environments with little
     # resources, such as Minikube. If you do want to specify resources, uncomment the following
@@ -76,12 +69,22 @@ controller:
     # requests:
     #   cpu: 100m
     #   memory: 128Mi
+  # GitLab home volume mount data host path (default /tmp/gitlab)
+  volumeHostPath: ""
+  # GitLab home volume type (default DirectoryOrCreate)
+  volumeType: ""
+  # Extra volume mounts
+  extraVolumeMounts: []
+  # Extra volumes
+  extraVolumes: []
+  # Persistent volume claim
+  persistentVolumeClaim: ""
   # Node selector
-  nodeSelector:
+  nodeSelector: {}
   # Affinity
-  affinity:
+  affinity: {}
   # Tolerations
-  tolerations:
+  tolerations: []
   # Service of controller configuration  
   service:
     # Service type ClusterIP, LoadBalancer, NodePort default (LoadBalancer)
@@ -99,7 +102,7 @@ controller:
     # Service account name
     name: ""
     # Service account annotations
-    # key=value
+    # Key: Value
     annotations: {}
 
 # Autoscaling horizontal (HorizontalPodAutoscaler)
@@ -109,7 +112,7 @@ autoscaling:
   # Min replicas
   minReplicas: 1
   # Max replicas
-  maxReplicas: 
+  maxReplicas: 10
   # Metric CPU resource (CPU percentage)
   targetCPUUtilizationPercentage: 80
   # Metric memory resource (Memory - RAM percentage)
@@ -120,7 +123,7 @@ ingress:
   # Enable ingress
   enabled: false
   # Annotations
-  annotations:
+  annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Ingress class name
@@ -130,7 +133,7 @@ ingress:
   # TLS configuration
   tlsConfig:
     # Enable TLS
-    enabled: false 
+    enabled: false
     # TLS crt
     crt: ""
     # TLS key 
@@ -147,3 +150,25 @@ pdb:
   enabled: false
   # Min available
   minAvailable: 1
+
+# Persistent volume claim configuration
+pvc:
+  # Create a persistent volume claim 
+  create: false
+  # Storage class name
+  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
+  # Persistent volume name
+  volumeName: ""
+
+# Persistent volume
+pv:
+  # Create a persistent volume
+  create: false
+  # Storage class name
+  storageClassName: "" # Empty string must be explicitly set otherwise default StorageClass will be set
+  # Claim ref
+  claimRef:
+    # Name of persistent volume claim
+    name: ""
+    # Namespace
+    namespace: ""
