@@ -129,15 +129,12 @@ ingress:
   # Ingress class name
   className: ""
   # Host configuration
-  host: ""
+  hosts: []
   # TLS configuration
-  tlsConfig:
-    # Enable TLS
-    enabled: false
-    # TLS crt
-    crt: ""
-    # TLS key 
-    key: ""
+  tls: []
+  #  - secretName: chart-example-tls
+  #    hosts:
+  #      - chart-example.local
 
 # Network Policy
 networkPolicy: 
