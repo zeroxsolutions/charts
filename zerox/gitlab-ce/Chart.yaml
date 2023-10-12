@@ -1,9 +1,9 @@
 # Copyright ZeroX.
 apiVersion: v2
 name: gitlab-ce
-description: GitLab Community Helm chart setup
+description: GitLab community helm chart setup
 type: application
-version: 1.0.0
+version: 0.0.1
 appVersion: "16.2.8-ce.0"
 home: https://zeroxsolutions.com
 keywords:
@@ -17,5 +17,5 @@ maintainers:
     url: https://github.com/zeroxsolutions/charts
 dependencies:
   - name: common
-    version: 1.0.0
+    version: 0.0.1
     repository: file://../common

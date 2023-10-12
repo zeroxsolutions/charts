@@ -4,9 +4,9 @@ Copyright ZeroX
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "common.fullname" . -}}
 {{- $svcHttpPort := .Values.controller.service.httpPort -}}
-{{- if and .Values.ingress.className (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+{{- if and .Values.ingress.ingressClassName (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.className}}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.ingressClassName }}
   {{- end }}
 {{- end }}
 {{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
@@ -26,20 +26,27 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.className (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.className }}
+  {{- if and .Values.ingress.ingressClassName (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
-  {{- with .Values.ingress.tls }}
   tls:
+    {{- if and .Values.ingress.tls ( and .Values.ingress.tls.key .Values.ingress.tls.crt ) }}
+    {{- if .Values.ingress.host }}
+    - hosts: 
+        - {{ .Values.ingress.host }}
+      secretName: {{ include "common.fullname" . }}-tls
+    {{- end }}
+    {{- end }}
+    {{- with .Values.ingress.extraTls }}
     {{- toYaml . | nindent 4 -}}
-  {{- end }}
+    {{- end }}
   rules:
-    {{- range $host := .Values.ingress.hosts }}
-    - host: {{ $host }}
+    {{- if .Values.ingress.host }}
+    - host: {{ .Values.ingress.host }}
       http:
         paths:
           {{- if $svcHttpPort }}
-          - path: /
+          - path: /(.*)
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:
@@ -53,6 +60,29 @@ spec:
             {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
             pathType: ImplementationSpecific
             {{- end }}
+          {{- end }}
+    {{- end }}
+    {{- range $host := .Values.ingress.extraHosts }}
+    - host: {{ $host.host }}
+      http:
+        paths:
+          {{- if and $svcHttpPort $host.paths }}
+          {{- range $path := $host.paths }}
+          - path: {{ $path.path | default "/" }}
+            backend:
+              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              service:
+                name: {{ $fullName }}
+                port:
+                  number: {{ $svcHttpPort }}
+              {{- else }}
+              serviceName: {{ $fullName }}
+              servicePort: {{ $svcHttpPort }}
+              {{- end }}
+            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            pathType: {{ $path.pathType | default "ImplementationSpecific" }} 
+            {{- end }}
+          {{- end }}
           {{- end }}
     {{- end }}
 {{- end }}

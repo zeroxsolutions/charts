@@ -127,14 +127,22 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   # Ingress class name
-  className: ""
+  ingressClassName: ""
   # Host configuration
-  hosts: []
+  host: ""
   # TLS configuration
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  tls: {}
+  # Extra hosts configuration
+  extraHosts: []
+  # Extra TLSs configuration
+  # - host: chart.example
+  #   paths:
+  #     pathType: ImplementationSpecific
+  #     path: /
+  extraTls: []
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
 
 # Network Policy
 networkPolicy: 
