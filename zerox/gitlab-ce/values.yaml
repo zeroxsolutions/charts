@@ -40,7 +40,7 @@ controller:
   extraEnvs: []
   # Extra configurations
   # Key: Value # Optional
-  extraConfigs: []
+  extraConfigs: {}
   # (Controller port) HTTP port
   httpPort: 80
   # Pod annotations

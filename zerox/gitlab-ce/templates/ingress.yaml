@@ -46,7 +46,7 @@ spec:
       http:
         paths:
           {{- if $svcHttpPort }}
-          - path: /(.*)
+          - path: /
             backend:
               {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
               service:

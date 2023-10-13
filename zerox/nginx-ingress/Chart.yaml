@@ -1,6 +1,6 @@
 # Copyright ZeroX.
 apiVersion: v2
-name: nginx-ignress
+name: nginx-ingress
 description: NGINX ingress controller helm chart setup
 type: application
 version: 0.0.1
