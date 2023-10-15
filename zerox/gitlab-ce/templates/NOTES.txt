@@ -1,4 +1,4 @@
-Copyright ZeroX
+{% comment %} Copyright ZeroX. {% endcomment %}
 1. The application URL:
 {{- if and .Values.ingress.enabled .Values.ingress.host }}
   http{{ if and .Values.ingress.tls ( and .Values.ingress.tls.key .Values.ingress.tls.crt ) }}s{{ end }}://{{ .Values.ingress.host }}/

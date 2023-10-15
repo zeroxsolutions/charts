@@ -1,3 +1,3 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}

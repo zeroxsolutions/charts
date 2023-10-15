@@ -1,5 +1,5 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}
 {{- if eq .Values.controller.kind "development" }}
 apiVersion: apps/v1

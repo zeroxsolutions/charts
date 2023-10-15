@@ -1,0 +1,9 @@
+{{/*
+Copyright ZeroX.
+*/}}
+apiVersion: v1
+kind: Secret
+metadata:
+  name: {{ include "common.fullname" . }}
+type: Opaque
+data:

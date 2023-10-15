@@ -1,5 +1,5 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}
 kind: ConfigMap
 apiVersion: v1
@@ -15,6 +15,6 @@ data:
     gitlab_rails['gitlab_port'] = {{ .Values.controller.httpPort }}
     {{- end }}
     # Add any other gitlab.rb configuration here, each on its own line
-  {{-  with.Values.controller.extraConfigs }}
-  {{- toYaml . | nindent 2 }}
-  {{- end }}
+    {{- with.Values.controller.extraConfigs }}
+    {{- . | nindent 4 }}
+    {{- end }}

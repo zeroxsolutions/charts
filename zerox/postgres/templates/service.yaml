@@ -1,15 +1,18 @@
+{{/*
+Copyright ZeroX.
+*/}}
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ include "postgres.fullname" . }}
+  name: {{ include "common.fullname" . }}
   labels:
-    {{- include "postgres.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.controller.service.type }}
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.controller.service.port }}
       targetPort: http
       protocol: TCP
       name: http
   selector:
-    {{- include "postgres.selectorLabels" . | nindent 4 }}
+    {{- include "common.selectorLabels" . | nindent 4 }}

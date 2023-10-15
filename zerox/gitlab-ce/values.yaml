@@ -1,4 +1,4 @@
-# Copyright ZeroX
+# Copyright ZeroX.
 
 # Global define (Require)
 global:
@@ -38,9 +38,10 @@ controller:
   #       name:  ""
   #       key: ""
   extraEnvs: []
-  # Extra configurations
-  # Key: Value # Optional
-  extraConfigs: {}
+  # Extra configurations GitLab app
+  # extraConfigs: |
+  #   letsencrypt['contact_emails'] = ['*'] # Optional
+  extraConfigs: ""
   # (Controller port) HTTP port
   httpPort: 80
   # Pod annotations
@@ -177,3 +178,22 @@ pv:
     name: ""
     # Namespace
     namespace: ""
+
+# Postgres configuration
+postgres:
+  # Enable a new PostgreSQL database
+  enabled: true
+  # Fullname
+  fullname: ""
+  # Name
+  name: ""
+  # Backup configuration
+  backup: 
+    # Enable backup database
+    enabled: false
+
+# Redis configuration
+redis:
+  # Enable a new Redis server
+  enabled: false
+  

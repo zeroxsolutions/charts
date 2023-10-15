@@ -1,5 +1,5 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}
 
 {{/*

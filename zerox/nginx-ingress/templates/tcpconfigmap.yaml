@@ -1,3 +1,9 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "common.fullname" }}-tcp 
+  namespace: {{ .Release.Namespace }}
+data:

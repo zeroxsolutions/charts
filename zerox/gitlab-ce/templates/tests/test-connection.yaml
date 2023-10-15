@@ -1,5 +1,5 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}
 apiVersion: v1
 kind: Pod

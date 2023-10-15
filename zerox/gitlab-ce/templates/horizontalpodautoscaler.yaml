@@ -1,5 +1,5 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}
 {{- if and .Values.autoscaling.enabled ( eq .Values.controller.kind "development" ) }}
 apiVersion: autoscaling/v2

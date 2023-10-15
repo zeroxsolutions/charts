@@ -1,5 +1,5 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}
 {{/*
 Return the target Kubernetes version
@@ -24,4 +24,19 @@ Return the appropriate apiVersion for RBAC resources.
 {{- else -}}
 {{- print "rbac.authorization.k8s.io/v1" -}}
 {{- end -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for Service Monitor resources.
+*/}}
+{{- define "common.capabilities.serviceMonitor.apiVersion" -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for Network Policy resources.
+*/}}
+{{- define "common.capabilities.networkPolicy.apiVersion" -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for Cron Job resources.
+*/}}
+{{- define "common.capabilities.cronJob.apiVersion" -}}
 {{- end -}}

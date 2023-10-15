@@ -1,5 +1,5 @@
-{{- /*
-Copyright ZeroX
+{{/*
+Copyright ZeroX.
 */}}
 {{- if .Values.ingress.enabled -}}
 {{- $fullName := include "common.fullname" . -}}
