@@ -11,8 +11,8 @@ global:
 
 # Controller
 controller:
-  # Kind of controller Development, DaemonSet, StatefulSet
-  kind: "development"
+  # Kind of controller Deployment, DaemonSet, Both
+  kind: "Deployment"
   # Registry (Docker Hub) image default docker.io
   registry: "docker.io"
   # Image name

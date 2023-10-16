@@ -8,3 +8,8 @@ global:
   name: "gitlab"
   # Kube version
   kubeVersion: ""
+
+# Controller
+controller: 
+  # Kind of controller Deployment, DaemonSet or Both
+  kind: "Deployment"

@@ -2,20 +2,17 @@
 Copyright ZeroX.
 */}}
 {{- if .Values.ingress.enabled -}}
+{{- $kubeVersion := include "common.capabilities.kubeVersion" . -}}
 {{- $fullName := include "common.fullname" . -}}
 {{- $svcHttpPort := .Values.controller.service.httpPort -}}
-{{- if and .Values.ingress.ingressClassName (not (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion)) }}
+{{- if and .Values.ingress.ingressClassName (not (semverCompare ">=1.18-0" $kubeVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
   {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.ingressClassName }}
   {{- end }}
+{{- else if and (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") (semverCompare ">=1.18-0" $kubeVersion) }}
+{{- $_ := unset .Values.ingress.annotations "kubernetes.io/ingress.class" }}
 {{- end }}
-{{- if semverCompare ">=1.19-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1
-{{- else if semverCompare ">=1.14-0" .Capabilities.KubeVersion.GitVersion -}}
-apiVersion: networking.k8s.io/v1beta1
-{{- else -}}
-apiVersion: extensions/v1beta1
-{{- end }}
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
   name: {{ $fullName }}
@@ -26,11 +23,11 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.ingress.ingressClassName (semverCompare ">=1.18-0" .Capabilities.KubeVersion.GitVersion) }}
-  ingressClassName: {{ .Values.ingress.ingressClassName }}
+  {{- if and .Values.ingress.ingressClassName (semverCompare ">=1.18-0" $kubeVersion) }}
+  ingressClassName: {{ default "nginx" .Values.ingress.ingressClassName }}
   {{- end }}
   tls:
-    {{- if and .Values.ingress.tls ( and .Values.ingress.tls.key .Values.ingress.tls.crt ) }}
+    {{- if and .Values.ingress.tls (and .Values.ingress.tls.key .Values.ingress.tls.crt) }}
     {{- if .Values.ingress.host }}
     - hosts: 
         - {{ .Values.ingress.host }}
@@ -48,7 +45,7 @@ spec:
           {{- if $svcHttpPort }}
           - path: /
             backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              {{- if semverCompare ">=1.19-0" $kubeVersion }}
               service:
                 name: {{ $fullName }}
                 port:
@@ -57,7 +54,7 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcHttpPort }}
               {{- end }}
-            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            {{- if semverCompare ">=1.18-0" $kubeVersion }}
             pathType: ImplementationSpecific
             {{- end }}
           {{- end }}
@@ -70,7 +67,7 @@ spec:
           {{- range $path := $host.paths }}
           - path: {{ $path.path | default "/" }}
             backend:
-              {{- if semverCompare ">=1.19-0" $.Capabilities.KubeVersion.GitVersion }}
+              {{- if semverCompare ">=1.19-0" $kubeVersion }}
               service:
                 name: {{ $fullName }}
                 port:
@@ -79,7 +76,7 @@ spec:
               serviceName: {{ $fullName }}
               servicePort: {{ $svcHttpPort }}
               {{- end }}
-            {{- if semverCompare ">=1.18-0" $.Capabilities.KubeVersion.GitVersion }}
+            {{- if semverCompare ">=1.18-0" $kubeVersion }}
             pathType: {{ $path.pathType | default "ImplementationSpecific" }} 
             {{- end }}
           {{- end }}

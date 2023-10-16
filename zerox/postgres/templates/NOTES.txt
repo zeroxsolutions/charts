@@ -1,1 +1,3 @@
-{% comment %} Copyright ZeroX. {% endcomment %}
+{{/*
+Copyright ZeroX.
+*/}}

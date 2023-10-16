@@ -1,8 +1,8 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if eq .Values.controller.kind "development" }}
-apiVersion: apps/v1
+{{- if eq .Values.controller.kind "Deployment" }}
+apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
   name: {{ include "common.fullname" . }}
@@ -28,7 +28,9 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+      {{- if not (eq .Values.controller.kind "Both") }}
       hostNetwork: {{ .Values.controller.hostNetwork | default false }}
+      {{- end }}
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       {{- if .Values.controller.podSecurityContext }}
       securityContext:
