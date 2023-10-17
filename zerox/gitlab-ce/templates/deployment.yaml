@@ -28,9 +28,7 @@ spec:
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- if not (eq .Values.controller.kind "Both") }}
       hostNetwork: {{ .Values.controller.hostNetwork | default false }}
-      {{- end }}
       serviceAccountName: {{ include "common.serviceAccountName" . }}
       {{- if .Values.controller.podSecurityContext }}
       securityContext:

@@ -45,6 +45,7 @@ Return the appropriate apiVersion for Horizontal Pod Autoscaler resources.
 Return the appropriate apiVersion for Cron Job resources.
 */}}
 {{- define "common.capabilities.cronJob.apiVersion" -}}
+{{- print "batch/v1" -}}
 {{- end -}}
 {{/*
 Return the appropriate apiVersion for Deployment resources.
