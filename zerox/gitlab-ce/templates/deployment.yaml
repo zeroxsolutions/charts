@@ -1,7 +1,7 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if eq .Values.controller.kind "Deployment" }}
+{{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
 apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:

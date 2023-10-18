@@ -13,3 +13,10 @@ global:
 controller: 
   # Kind of controller Deployment, DaemonSet or Both
   kind: "Deployment"
+
+
+# Role-based access control (RBAC)
+rbac:
+  # Create RBAC resources
+  create: false
+  scope: false
