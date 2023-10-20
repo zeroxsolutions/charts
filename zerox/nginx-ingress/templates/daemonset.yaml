@@ -1,3 +1,6 @@
 {{/*
 Copyright ZeroX.
 */}}
+{{- if or (eq .Values.controller.kind "DaemonSet") (eq .Values.controller.kind "Both") -}}
+
+{{- end -}}

@@ -1,3 +1,5 @@
 {{/*
 Copyright ZeroX.
 */}}
+{{- if and .Values.rbac.create .Values.rbac.scope -}}
+{{- end -}}

@@ -1,10 +1,12 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if .Values.rbac.create -}}
-{{- if not .Values.rbac.scope -}}
+{{- if and .Values.rbac.create (not .Values.rbac.scope) -}}
 apiVersion: {{ include "common.capabilities.rbac.apiVersion" . }}
 kind: ClusterRole
-
-{{- end -}}
+metadata:
+  name: {{ include "common.fullname" . }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+rules:
 {{- end -}}

@@ -2,7 +2,7 @@
 Copyright ZeroX.
 */}}
 kind: ConfigMap
-apiVersion: v1
+apiVersion: {{ include "common.capabilities.configMap.apiVersion" . }}
 metadata:
   name: {{ include "common.fullname" . }}
   namespace: {{ .Release.Namespace }}
