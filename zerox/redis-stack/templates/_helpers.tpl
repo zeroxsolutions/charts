@@ -1,7 +1,7 @@
 {{/*
 Expand the name of the chart.
 */}}
-{{- define "redis-cluster.name" -}}
+{{- define "redis-stack.name" -}}
 {{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
@@ -10,7 +10,7 @@ Create a default fully qualified app name.
 We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
 If release name contains chart name it will be used as a full name.
 */}}
-{{- define "redis-cluster.fullname" -}}
+{{- define "redis-stack.fullname" -}}
 {{- if .Values.fullnameOverride }}
 {{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
 {{- else }}
@@ -26,16 +26,16 @@ If release name contains chart name it will be used as a full name.
 {{/*
 Create chart name and version as used by the chart label.
 */}}
-{{- define "redis-cluster.chart" -}}
+{{- define "redis-stack.chart" -}}
 {{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Common labels
 */}}
-{{- define "redis-cluster.labels" -}}
-helm.sh/chart: {{ include "redis-cluster.chart" . }}
-{{ include "redis-cluster.selectorLabels" . }}
+{{- define "redis-stack.labels" -}}
+helm.sh/chart: {{ include "redis-stack.chart" . }}
+{{ include "redis-stack.selectorLabels" . }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
@@ -45,17 +45,17 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{/*
 Selector labels
 */}}
-{{- define "redis-cluster.selectorLabels" -}}
-app.kubernetes.io/name: {{ include "redis-cluster.name" . }}
+{{- define "redis-stack.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "redis-stack.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
 
 {{/*
 Create the name of the service account to use
 */}}
-{{- define "redis-cluster.serviceAccountName" -}}
+{{- define "redis-stack.serviceAccountName" -}}
 {{- if .Values.serviceAccount.create }}
-{{- default (include "redis-cluster.fullname" .) .Values.serviceAccount.name }}
+{{- default (include "redis-stack.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}

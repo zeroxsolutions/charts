@@ -3,9 +3,9 @@
 # Global define (Require)
 global:
   # Full name override
-  fullname: "gitlab"
+  fullname: "nginx-ingress"
   # Name override
-  name: "gitlab"
+  name: "nginx-ingress"
   # Kube version
   kubeVersion: ""
 
@@ -23,4 +23,5 @@ controller:
 rbac:
   # Create RBAC resources
   create: false
+  # Scope 
   scope: false
