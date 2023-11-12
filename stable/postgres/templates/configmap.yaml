@@ -1,9 +1,12 @@
 {{/*
 Copyright ZeroX.
 */}}
-apiVersion: v1
-kind: Secret
+kind: ConfigMap
+apiVersion: {{ include "common.capabilities.configMap.apiVersion" . }}
 metadata:
   name: {{ include "common.fullname" . }}
-type: Opaque
+  namespace: {{ .Release.Namespace }}
 data:
+  POSTGRES_DB: {{ default "postgres" .Values.controller.primary.db }}
+  POSTGRES_USER: {{ default "root" .Values.controller.primary.username }}
+  

@@ -11,8 +11,6 @@ global:
 
 # Controller
 controller:
-  # Kind of controller Deployment, DaemonSet, Both
-  kind: "Deployment"
   # Registry (Docker Hub) image default docker.io
   registry: "docker.io"
   # Image name
@@ -23,6 +21,8 @@ controller:
   pullPolicy: "IfNotPresent"
   # Replica count
   replicaCount: 1
+  # Pod labels
+  podLabels: {}
   # Host network
   hostNetwork: false
   # GitLab root password (default random)

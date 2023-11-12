@@ -84,3 +84,27 @@ Return the appropriate apiVersion for DaemonSet resources.
 {{- define "common.capabilities.daemonSet.apiVersion" -}}
 {{- print "v1" -}}
 {{- end -}}
+{{/*
+Return the appropriate apiVersion for StatefulSet resources.
+*/}}
+{{- define "common.capabilities.statefulSet.apiVersion" -}}
+{{- print "apps/v1" -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for Secret resources.
+*/}}
+{{- define "common.capabilities.secret.apiVersion" -}}
+{{- print "v1" -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for ServiceAccount resources.
+*/}}
+{{- define "common.capabilities.serviceAccount.apiVersion" -}}
+{{- print "v1" -}}
+{{- end -}}
+{{/*
+Return the appropriate apiVersion for PersistentVolume resources.
+*/}}
+{{- define "common.capabilities.persistentVolume.apiVersion" -}}
+{{- print "v1" -}}
+{{- end -}}

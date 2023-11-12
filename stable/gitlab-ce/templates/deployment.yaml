@@ -1,7 +1,6 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if or (eq .Values.controller.kind "Deployment") (eq .Values.controller.kind "Both") }}
 apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
@@ -23,6 +22,8 @@ spec:
       {{- end }}
       labels:
         {{- include "common.selectorLabels" . | nindent 8 }}
+        {{- with .Values.controller.podLabels }}
+        {{- toYaml . | nindent 8 }}
     spec:
       {{- with .Values.controller.imagePullSecrets }}
       imagePullSecrets:
@@ -105,4 +106,3 @@ spec:
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-{{- end }}

@@ -11,12 +11,77 @@ global:
 
 # Controller
 controller:
+  # Registry (Docker Hub) image default docker.io
+  registry: "docker.io"
+  # Image name
+  image: "postgres"
+  # Version image default Chart app version
+  version: "13.12"
+  # Pull policy default IfNotPresent
+  pullPolicy: "IfNotPresent"
+  # Replicas setting default 1
+  replicaCount: 1
+  # Pod annotations
+  podAnnotations: {}
+  # Pod labels
+  podLabels: {}
+  # Host network
+  hostNetwork: false
+  # Image pull secrets
+  imagePullSecrets: []
+  # Postgres port
+  port: 5432
+  # Extra environment variables
+  # - name: ""
+  #   value: ""
+  # - name:
+  #   valueFrom:
+  #     configMapKeyRef(secretKeyRef):
+  #       name:  ""
+  #       key: ""
+  extraEnvs: []
+  # Security context
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+  # Primary database configuration
+  primary:
+    # Username database
+    username: ""
+    # Primary password database 
+    password: ""
+    # Postgres database name
+    db: ""
+
   # Service of controller configuration  
   service:
     # Service type ClusterIP, LoadBalancer, NodePort default (LoadBalancer)
     type: ""
     # PostgreSQL port
     port: 5432
+    # ClusterIP with service type ClusterIP
+    clusterIP: ""
+    # Node port configuration
+    nodePort: 35432
+    # Load balancer IP
+    loadBalancerIP: ""
+    # Extra labels
+    extraLabels: {}
 
   # Service account configuration
   serviceAccount:
@@ -27,3 +92,13 @@ controller:
     # Service account annotations
     # Key: Value
     annotations: {}
+
+# Configuration HA Proxy
+haproxy: 
+  # Enabled HA Proxy
+  enabled: false
+
+# Readonly configuration
+readonly:
+  # Enabled readonly
+  enabled: false
