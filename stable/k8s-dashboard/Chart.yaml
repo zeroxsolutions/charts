@@ -1,14 +1,15 @@
 # Copyright ZeroX.
 apiVersion: v2
-name: nginx-ingress
-description: NGINX Ingress Controller
+name: k8s-dashboard
+description: Kubernetes Dashboard
 type: application
 version: 0.0.1
-appVersion: "3.3.0"
+appVersion: "v2.7.0"
 home: https://zeroxsolutions.com
 keywords:
-  - "nginx"
-  - "ingress"
+  - "k8s"
+  - "kubernetes"
+  - "dashboard"
   - "helm"
 annotations:
   category: "infrastructure"
