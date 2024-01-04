@@ -1,98 +1,155 @@
-# Default values for k8s-dashboard.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Copyright ZeroX.
 
-replicaCount: 1
+# Global define (Require)
+global:
+  # Full name override
+  fullname: "k8s-dashboard"
+  # Name override
+  name: "k8s-dashboard"
+  # Kube version
+  kubeVersion: ""
 
-image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+# Controller
+controller:
+  # Registry (Docker Hub) image default docker.io
+  registry: "docker.io"
+  # Image name
+  image: "kubernetesui/dashboard"
+  # Version image default Chart app version
+  version: "v2.7.0"
+  # Pull policy default IfNotPresent
+  pullPolicy: "IfNotPresent"
+  # Replica count
+  replicaCount: 1
+  # Pod labels
+  podLabels: {}
+  # Host network
+  hostNetwork: false
+  # Extra environment variables
+  # - name: ""
+  #   value: ""
+  # - name:
+  #   valueFrom:
+  #     configMapKeyRef(secretKeyRef):
+  #       name:  ""
+  #       key: ""
+  extraEnvs: []
+  # Extra configurations GitLab app
+  # extraConfigs: |
+  #   letsencrypt['contact_emails'] = ['*'] # Optional
+  extraConfigs: ""
+  # (Controller port) HTTP port
+  httpPort: 80
+  # Pod annotations
+  podAnnotations: {}
+  # Image pull secrets
+  imagePullSecrets: []
+  # Pod security context
+  podSecurityContext: {}
+    # fsGroup: 2000
+  # Security context
+  securityContext: {}
+    # capabilities:
+    #   drop:
+    #   - ALL
+    # readOnlyRootFilesystem: true
+    # runAsNonRoot: true
+    # runAsUser: 1000
+  resources: {}
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    # limits:
+    #   cpu: 100m
+    #   memory: 128Mi
+    # requests:
+    #   cpu: 100m
+    #   memory: 128Mi
+  # GitLab home volume mount data host path (default /tmp/gitlab)
+  volumeHostPath: ""
+  # GitLab home volume type (default DirectoryOrCreate)
+  volumeType: ""
+  # Extra volume mounts
+  extraVolumeMounts: []
+  # Extra volumes
+  extraVolumes: []
+  # Persistent volume claim
+  persistentVolumeClaim: ""
+  # Node selector
+  nodeSelector: {}
+  # Affinity
+  affinity: {}
+  # Tolerations
+  tolerations: []
+  # Service of controller configuration  
+  service:
+    # Service type ClusterIP, LoadBalancer, NodePort default (LoadBalancer)
+    type: ""
+    # HTTP port
+    httpPort: 80
+    # ClusterIP with service type ClusterIP
+    clusterIP: ""
+    # Node port configuration
+    nodePort: 30080
+  # Service account configuration
+  serviceAccount:
+    # Create new service account
+    create: true
+    # Service account name
+    name: ""
+    # Service account annotations
+    # Key: Value
+    annotations: {}
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Automatically mount a ServiceAccount's API credentials?
-  automount: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
-podAnnotations: {}
-podLabels: {}
-
-podSecurityContext: {}
-  # fsGroup: 2000
-
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
-
-service:
-  type: ClusterIP
-  port: 80
-
-ingress:
+# Autoscaling horizontal (HorizontalPodAutoscaler)
+autoscaling:
+  # Enable autoscaling
   enabled: false
-  className: ""
+  # Min replicas
+  minReplicas: 1
+  # Max replicas
+  maxReplicas: 10
+  # Metric CPU resource (CPU percentage)
+  targetCPUUtilizationPercentage: 80
+  # Metric memory resource (Memory - RAM percentage)
+  targetMemoryUtilizationPercentage: 80
+  
+# Ingress configuration (Option)
+ingress:
+  # Enable ingress
+  enabled: false
+  # Annotations
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
+  # Ingress class name
+  ingressClassName: ""
+  # Host configuration
+  host: ""
+  # TLS configuration
+  tls: {}
+  # Extra hosts configuration
+  extraHosts: []
+  # Extra TLSs configuration
+  # - host: chart.example
+  #   paths:
+  #     pathType: ImplementationSpecific
+  #     path: /
+  extraTls: []
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-autoscaling:
+# Network Policy
+networkPolicy: 
+  # Enabled network policy
   enabled: false
-  minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
+# Pod Disruption Budget
+pdb:
+  # Enabled pod disruption budget
+  enabled: false
+  # Min available
+  minAvailable: 1
 
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
-
-nodeSelector: {}
-
-tolerations: []
-
-affinity: {}
