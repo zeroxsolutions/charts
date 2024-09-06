@@ -24,6 +24,7 @@ spec:
         {{- include "common.selectorLabels" . | nindent 8 }}
         {{- with .Values.controller.podLabels }}
         {{- toYaml . | nindent 8 }}
+        {{- end }}
     spec:
       {{- with .Values.controller.imagePullSecrets }}
       imagePullSecrets:
@@ -62,7 +63,7 @@ spec:
                 name: {{ include "common.fullname" . }}
           env:
             {{- if .Values.controller.extraEnvs }}
-            {{ toYaml .Values.controller.extraEnvs | nindent 12 }}
+            {{- toYaml .Values.controller.extraEnvs | nindent 12 }}
             {{- end }}
           {{- if .Values.controller.resources }}
           resources:
