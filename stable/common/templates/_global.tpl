@@ -50,6 +50,13 @@ app.kubernetes.io/managed-by: {{ .Release.Service }}
 Selector labels
 */}}
 {{- define "common.selectorLabels" -}}
+{{- if .Values.controller.selectorLabels -}}
+{{- toYaml .Values.controller.selectorLabels }}
+{{- end -}}
 app.kubernetes.io/name: {{ include "common.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
 {{- end }}
+
+{{- define "common.serviceAccountName" -}}
+{{- default (include "common.fullname" .) .Values.serviceAccount.name -}}
+{{- end -}}

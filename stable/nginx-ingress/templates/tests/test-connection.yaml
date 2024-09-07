@@ -1,12 +1,13 @@
+---
 {{/*
 Copyright ZeroX.
 */}}
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "nginx-ingress.fullname" . }}-test-connection"
+  name: "{{ include "common.fullname" . }}-test-connection"
   labels:
-    {{- include "nginx-ingress.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -14,5 +15,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "nginx-ingress.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "common.fullname" . }}:{{ .Values.controller.service.httpPort }}']
   restartPolicy: Never

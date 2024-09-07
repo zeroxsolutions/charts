@@ -1,9 +1,12 @@
 ---
-apiVersion: apiextensions.k8s.io/v1
+{{/*
+Copyright ZeroX.
+*/}}
+apiVersion: {{ include "common.capabilities.customResourceDefinition.apiVersion" . }}
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.13.0
+    controller-gen.kubebuilder.io/version: v0.16.1
   name: policies.k8s.nginx.org
 spec:
   group: k8s.nginx.org
@@ -34,24 +37,27 @@ spec:
             resources.
           properties:
             apiVersion:
-              description:
-                "APIVersion defines the versioned schema of this representation
-                of an object. Servers should convert recognized schemas to the latest
-                internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: |-
+                APIVersion defines the versioned schema of this representation of an object.
+                Servers should convert recognized schemas to the latest internal value, and
+                may reject unrecognized values.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
               type: string
             kind:
-              description:
-                "Kind is a string value representing the REST resource this
-                object represents. Servers may infer this from the endpoint the client
-                submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: |-
+                Kind is a string value representing the REST resource this object represents.
+                Servers may infer this from the endpoint the client submits requests to.
+                Cannot be updated.
+                In CamelCase.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
               type: string
             metadata:
               type: object
             spec:
-              description:
-                PolicySpec is the spec of the Policy resource. The spec includes
-                multiple fields, where each field represents a different policy. Only
-                one policy (field) is allowed.
+              description: |-
+                PolicySpec is the spec of the Policy resource.
+                The spec includes multiple fields, where each field represents a different policy.
+                Only one policy (field) is allowed.
               properties:
                 accessControl:
                   description:
@@ -67,10 +73,30 @@ spec:
                         type: string
                       type: array
                   type: object
+                apiKey:
+                  description: APIKey defines an API Key policy.
+                  properties:
+                    clientSecret:
+                      type: string
+                    suppliedIn:
+                      description:
+                        SuppliedIn defines the locations API Key should be
+                        supplied in.
+                      properties:
+                        header:
+                          items:
+                            type: string
+                          type: array
+                        query:
+                          items:
+                            type: string
+                          type: array
+                      type: object
+                  type: object
                 basicAuth:
-                  description:
-                    "BasicAuth holds HTTP Basic authentication configuration
-                    policy status: preview"
+                  description: |-
+                    BasicAuth holds HTTP Basic authentication configuration
+                    policy status: preview
                   properties:
                     realm:
                       type: string
@@ -172,6 +198,8 @@ spec:
                       type: string
                     rejectCode:
                       type: integer
+                    scale:
+                      type: boolean
                     zoneSize:
                       type: string
                   type: object
@@ -187,6 +215,8 @@ spec:
                     securityLog:
                       description: SecurityLog defines the security log of a WAF policy.
                       properties:
+                        apLogBundle:
+                          type: string
                         apLogConf:
                           type: string
                         enable:
@@ -198,6 +228,8 @@ spec:
                       items:
                         description: SecurityLog defines the security log of a WAF policy.
                         properties:
+                          apLogBundle:
+                            type: string
                           apLogConf:
                             type: string
                           enable:
@@ -231,24 +263,27 @@ spec:
             resources.
           properties:
             apiVersion:
-              description:
-                "APIVersion defines the versioned schema of this representation
-                of an object. Servers should convert recognized schemas to the latest
-                internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
+              description: |-
+                APIVersion defines the versioned schema of this representation of an object.
+                Servers should convert recognized schemas to the latest internal value, and
+                may reject unrecognized values.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
               type: string
             kind:
-              description:
-                "Kind is a string value representing the REST resource this
-                object represents. Servers may infer this from the endpoint the client
-                submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
+              description: |-
+                Kind is a string value representing the REST resource this object represents.
+                Servers may infer this from the endpoint the client submits requests to.
+                Cannot be updated.
+                In CamelCase.
+                More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
               type: string
             metadata:
               type: object
             spec:
-              description:
-                PolicySpec is the spec of the Policy resource. The spec includes
-                multiple fields, where each field represents a different policy. Only
-                one policy (field) is allowed.
+              description: |-
+                PolicySpec is the spec of the Policy resource.
+                The spec includes multiple fields, where each field represents a different policy.
+                Only one policy (field) is allowed.
               properties:
                 accessControl:
                   description:

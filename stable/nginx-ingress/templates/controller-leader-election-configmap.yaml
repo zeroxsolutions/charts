@@ -1,0 +1,17 @@
+---
+{{/*
+Copyright ZeroX.
+*/}}
+{{- if .Values.controller.reportIngressStatus.enableLeaderElection }}
+apiVersion: {{ include "common.capabilities.configMap.apiVersion" . }}
+kind: ConfigMap
+metadata:
+  name: {{ include "nginx-ingress.leaderElectionName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+  {{- if .Values.controller.reportIngressStatus.annotations }}
+  annotations:
+    {{- toYaml .Values.controller.reportIngressStatus.annotations | nindent 4 }}
+  {{- end }}
+{{- end }}

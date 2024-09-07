@@ -1,0 +1,25 @@
+---
+{{/*
+Copyright ZeroX.
+*/}}
+{{- if and .Values.prometheus.create .Values.prometheus.service.create}}
+apiVersion: {{ include "common.capabilities.service.apiVersion" . }}
+kind: Service
+metadata:
+  name: {{ include "nginx-ingress.prometheus.serviceName" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+    {{- if .Values.prometheus.service.labels -}}
+    {{- toYaml .Values.prometheus.service.labels | nindent 4 }}
+    {{- end }}
+spec:
+  clusterIP: None
+  ports:
+  - name: prometheus
+    protocol: TCP
+    port: {{ .Values.prometheus.port }}
+    targetPort: {{ .Values.prometheus.port }}
+  selector:
+    {{- include "nginx-ingress.selectorLabels" . | nindent 4 }}
+{{- end }}

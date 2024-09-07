@@ -1,0 +1,15 @@
+---
+{{/*
+Copyright ZeroX.
+*/}}
+{{ if .Values.controller.globalConfiguration.create }}
+apiVersion: {{ include "common.capabilities.globalConfiguration.apiVersion" . }}
+kind: GlobalConfiguration
+metadata:
+  name: {{ include "nginx-ingress.controller.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+spec:
+    {{- toYaml .Values.controller.globalConfiguration.spec | nindent 2 }}
+{{- end }}

@@ -1,9 +1,12 @@
-apiVersion: apiextensions.k8s.io/v1
+---
+{{/*
+Copyright ZeroX.
+*/}}
+apiVersion: {{ include "common.capabilities.customResourceDefinition.apiVersion" . }}
 kind: CustomResourceDefinition
 metadata:
   annotations:
-    controller-gen.kubebuilder.io/version: v0.10.0
-  creationTimestamp: null
+    controller-gen.kubebuilder.io/version: v0.13.0
   name: appolicies.appprotect.f5.com
 spec:
   group: appprotect.f5.com
@@ -21,10 +24,16 @@ spec:
           description: APPolicyConfig is the Schema for the APPolicyconfigs API
           properties:
             apiVersion:
-              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
+              description:
+                "APIVersion defines the versioned schema of this representation
+                of an object. Servers should convert recognized schemas to the latest
+                internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources"
               type: string
             kind:
-              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
+              description:
+                "Kind is a string value representing the REST resource this
+                object represents. Servers may infer this from the endpoint the client
+                submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds"
               type: string
             metadata:
               type: object
@@ -101,7 +110,7 @@ spec:
                             properties:
                               description:
                                 enum:
-                                  - '%u decoding'
+                                  - "%u decoding"
                                   - Apache whitespace
                                   - Bad unescape
                                   - Bare byte decoding
@@ -128,7 +137,7 @@ spec:
                                   - Unescaped space in URL
                                   - Unparsable request content
                                   - Several Content-Length headers
-                                  - 'POST request with Content-Length: 0'
+                                  - "POST request with Content-Length: 0"
                                   - Null in request
                                   - No Host header in HTTP/1.1 request
                                   - Multiple host headers
@@ -174,69 +183,70 @@ spec:
                                 type: string
                               name:
                                 enum:
-                                  - "VIOL_ACCESS_INVALID"
-                                  - "VIOL_ACCESS_MALFORMED"
-                                  - "VIOL_ACCESS_MISSING"
-                                  - "VIOL_ASM_COOKIE_HIJACKING"
-                                  - "VIOL_ASM_COOKIE_MODIFIED"
-                                  - "VIOL_BLACKLISTED_IP"
-                                  - "VIOL_COOKIE_EXPIRED"
-                                  - "VIOL_COOKIE_LENGTH"
-                                  - "VIOL_COOKIE_MALFORMED"
-                                  - "VIOL_COOKIE_MODIFIED"
-                                  - "VIOL_CSRF"
-                                  - "VIOL_DATA_GUARD"
-                                  - "VIOL_ENCODING"
-                                  - "VIOL_EVASION"
-                                  - "VIOL_FILETYPE"
-                                  - "VIOL_FILE_UPLOAD"
-                                  - "VIOL_FILE_UPLOAD_IN_BODY"
-                                  - "VIOL_GRAPHQL_ERROR_RESPONSE"
-                                  - "VIOL_GRAPHQL_FORMAT"
-                                  - "VIOL_GRAPHQL_INTROSPECTION_QUERY"
-                                  - "VIOL_GRAPHQL_MALFORMED"
-                                  - "VIOL_GRPC_FORMAT"
-                                  - "VIOL_GRPC_MALFORMED"
-                                  - "VIOL_GRPC_METHOD"
-                                  - "VIOL_HEADER_LENGTH"
-                                  - "VIOL_HEADER_METACHAR"
-                                  - "VIOL_HEADER_REPEATED"
-                                  - "VIOL_HTTP_PROTOCOL"
-                                  - "VIOL_HTTP_RESPONSE_STATUS"
-                                  - "VIOL_JSON_FORMAT"
-                                  - "VIOL_JSON_MALFORMED"
-                                  - "VIOL_JSON_SCHEMA"
-                                  - "VIOL_MANDATORY_HEADER"
-                                  - "VIOL_MANDATORY_PARAMETER"
-                                  - "VIOL_MANDATORY_REQUEST_BODY"
-                                  - "VIOL_METHOD"
-                                  - "VIOL_PARAMETER"
-                                  - "VIOL_PARAMETER_ARRAY_VALUE"
-                                  - "VIOL_PARAMETER_DATA_TYPE"
-                                  - "VIOL_PARAMETER_EMPTY_VALUE"
-                                  - "VIOL_PARAMETER_LOCATION"
-                                  - "VIOL_PARAMETER_MULTIPART_NULL_VALUE"
-                                  - "VIOL_PARAMETER_NAME_METACHAR"
-                                  - "VIOL_PARAMETER_NUMERIC_VALUE"
-                                  - "VIOL_PARAMETER_REPEATED"
-                                  - "VIOL_PARAMETER_STATIC_VALUE"
-                                  - "VIOL_PARAMETER_VALUE_BASE64"
-                                  - "VIOL_PARAMETER_VALUE_LENGTH"
-                                  - "VIOL_PARAMETER_VALUE_METACHAR"
-                                  - "VIOL_PARAMETER_VALUE_REGEXP"
-                                  - "VIOL_POST_DATA_LENGTH"
-                                  - "VIOL_QUERY_STRING_LENGTH"
-                                  - "VIOL_RATING_NEED_EXAMINATION"
-                                  - "VIOL_RATING_THREAT"
-                                  - "VIOL_REQUEST_LENGTH"
-                                  - "VIOL_REQUEST_MAX_LENGTH"
-                                  - "VIOL_THREAT_CAMPAIGN"
-                                  - "VIOL_URL"
-                                  - "VIOL_URL_CONTENT_TYPE"
-                                  - "VIOL_URL_LENGTH"
-                                  - "VIOL_URL_METACHAR"
-                                  - "VIOL_XML_FORMAT"
-                                  - "VIOL_XML_MALFORMED"
+                                  - VIOL_ACCESS_INVALID
+                                  - VIOL_ACCESS_MALFORMED
+                                  - VIOL_ACCESS_MISSING
+                                  - VIOL_ACCESS_UNAUTHORIZED
+                                  - VIOL_ASM_COOKIE_HIJACKING
+                                  - VIOL_ASM_COOKIE_MODIFIED
+                                  - VIOL_BLACKLISTED_IP
+                                  - VIOL_COOKIE_EXPIRED
+                                  - VIOL_COOKIE_LENGTH
+                                  - VIOL_COOKIE_MALFORMED
+                                  - VIOL_COOKIE_MODIFIED
+                                  - VIOL_CSRF
+                                  - VIOL_DATA_GUARD
+                                  - VIOL_ENCODING
+                                  - VIOL_EVASION
+                                  - VIOL_FILE_UPLOAD
+                                  - VIOL_FILE_UPLOAD_IN_BODY
+                                  - VIOL_FILETYPE
+                                  - VIOL_GRAPHQL_ERROR_RESPONSE
+                                  - VIOL_GRAPHQL_FORMAT
+                                  - VIOL_GRAPHQL_INTROSPECTION_QUERY
+                                  - VIOL_GRAPHQL_MALFORMED
+                                  - VIOL_GRPC_FORMAT
+                                  - VIOL_GRPC_MALFORMED
+                                  - VIOL_GRPC_METHOD
+                                  - VIOL_HEADER_LENGTH
+                                  - VIOL_HEADER_METACHAR
+                                  - VIOL_HEADER_REPEATED
+                                  - VIOL_HTTP_PROTOCOL
+                                  - VIOL_HTTP_RESPONSE_STATUS
+                                  - VIOL_JSON_FORMAT
+                                  - VIOL_JSON_MALFORMED
+                                  - VIOL_JSON_SCHEMA
+                                  - VIOL_MANDATORY_HEADER
+                                  - VIOL_MANDATORY_PARAMETER
+                                  - VIOL_MANDATORY_REQUEST_BODY
+                                  - VIOL_METHOD
+                                  - VIOL_PARAMETER
+                                  - VIOL_PARAMETER_ARRAY_VALUE
+                                  - VIOL_PARAMETER_DATA_TYPE
+                                  - VIOL_PARAMETER_EMPTY_VALUE
+                                  - VIOL_PARAMETER_LOCATION
+                                  - VIOL_PARAMETER_MULTIPART_NULL_VALUE
+                                  - VIOL_PARAMETER_NAME_METACHAR
+                                  - VIOL_PARAMETER_NUMERIC_VALUE
+                                  - VIOL_PARAMETER_REPEATED
+                                  - VIOL_PARAMETER_STATIC_VALUE
+                                  - VIOL_PARAMETER_VALUE_BASE64
+                                  - VIOL_PARAMETER_VALUE_LENGTH
+                                  - VIOL_PARAMETER_VALUE_METACHAR
+                                  - VIOL_PARAMETER_VALUE_REGEXP
+                                  - VIOL_POST_DATA_LENGTH
+                                  - VIOL_QUERY_STRING_LENGTH
+                                  - VIOL_RATING_NEED_EXAMINATION
+                                  - VIOL_RATING_THREAT
+                                  - VIOL_REQUEST_LENGTH
+                                  - VIOL_REQUEST_MAX_LENGTH
+                                  - VIOL_THREAT_CAMPAIGN
+                                  - VIOL_URL
+                                  - VIOL_URL_CONTENT_TYPE
+                                  - VIOL_URL_LENGTH
+                                  - VIOL_URL_METACHAR
+                                  - VIOL_XML_FORMAT
+                                  - VIOL_XML_MALFORMED
                                 type: string
                             type: object
                           type: array
@@ -510,6 +520,12 @@ spec:
                       properties:
                         creditCardNumbers:
                           type: boolean
+                        customPatterns:
+                          type: boolean
+                        customPatternsList:
+                          items:
+                            type: string
+                          type: array
                         enabled:
                           type: boolean
                         enforcementMode:
@@ -521,7 +537,11 @@ spec:
                           items:
                             type: string
                           type: array
+                        firstCustomCharactersToExpose:
+                          type: integer
                         lastCcnDigitsToExpose:
+                          type: integer
+                        lastCustomCharactersToExpose:
                           type: integer
                         lastSsnDigitsToExpose:
                           type: integer
@@ -635,6 +655,93 @@ spec:
                           pattern: ^http
                           type: string
                       type: object
+                    graphql-profiles:
+                      items:
+                        properties:
+                          $action:
+                            enum:
+                              - delete
+                            type: string
+                          attackSignaturesCheck:
+                            type: boolean
+                          defenseAttributes:
+                            properties:
+                              allowIntrospectionQueries:
+                                type: boolean
+                              maximumBatchedQueries:
+                                anyOf:
+                                  - type: integer
+                                  - type: string
+                                x-kubernetes-int-or-string: true
+                              maximumQueryCost:
+                                anyOf:
+                                  - type: integer
+                                  - type: string
+                                x-kubernetes-int-or-string: true
+                              maximumStructureDepth:
+                                anyOf:
+                                  - type: integer
+                                  - type: string
+                                x-kubernetes-int-or-string: true
+                              maximumTotalLength:
+                                anyOf:
+                                  - type: integer
+                                  - type: string
+                                x-kubernetes-int-or-string: true
+                              maximumValueLength:
+                                anyOf:
+                                  - type: integer
+                                  - type: string
+                                x-kubernetes-int-or-string: true
+                              tolerateParsingWarnings:
+                                type: boolean
+                            type: object
+                          description:
+                            type: string
+                          metacharElementCheck:
+                            type: boolean
+                          metacharOverrides:
+                            items:
+                              properties:
+                                isAllowed:
+                                  type: boolean
+                                metachar:
+                                  type: string
+                              type: object
+                            type: array
+                          name:
+                            type: string
+                          responseEnforcement:
+                            properties:
+                              blockDisallowedPatterns:
+                                type: boolean
+                              disallowedPatterns:
+                                items:
+                                  type: string
+                                type: array
+                            type: object
+                          sensitiveData:
+                            items:
+                              properties:
+                                parameterName:
+                                  type: string
+                              type: object
+                            type: array
+                          signatureOverrides:
+                            items:
+                              properties:
+                                enabled:
+                                  type: boolean
+                                name:
+                                  type: string
+                                signatureId:
+                                  type: integer
+                                tag:
+                                  type: string
+                              type: object
+                            type: array
+                        type: object
+                      type: array
                     grpc-profiles:
                       items:
                         properties:
@@ -645,8 +752,6 @@ spec:
                           associateUrls:
                             type: boolean
                           attackSignaturesCheck:
-                            type: boolean
-                          metacharCheck:
                             type: boolean
                           decodeStringValuesAsBase64:
                             enum:
@@ -687,6 +792,8 @@ spec:
                                   type: string
                               type: object
                             type: array
+                          metacharCheck:
+                            type: boolean
                           metacharElementCheck:
                             type: boolean
                           name:
@@ -1138,7 +1245,7 @@ spec:
                                   - UNSUBSCRIBE
                                   - VERSION_CONTROL
                                   - X-MS-ENUMATTS
-                                  - '*'
+                                  - "*"
                                 type: string
                               name:
                                 type: string
@@ -1563,7 +1670,7 @@ spec:
                               - UNSUBSCRIBE
                               - VERSION_CONTROL
                               - X-MS-ENUMATTS
-                              - '*'
+                              - "*"
                             type: string
                           methodOverrides:
                             items:
@@ -1807,7 +1914,7 @@ spec:
                                             - UNSUBSCRIBE
                                             - VERSION_CONTROL
                                             - X-MS-ENUMATTS
-                                            - '*'
+                                            - "*"
                                           type: string
                                         name:
                                           type: string
@@ -2064,93 +2171,6 @@ spec:
                           pattern: ^http
                           type: string
                       type: object
-                    graphql-profiles:
-                      items:
-                        properties:
-                          $action:
-                            enum:
-                              - delete
-                            type: string
-                          attackSignaturesCheck:
-                            type: boolean
-                          defenseAttributes:
-                            properties:
-                              allowIntrospectionQueries:
-                                type: boolean
-                              maximumBatchedQueries:
-                                anyOf:
-                                  - type: integer
-                                  - type: string
-                                x-kubernetes-int-or-string: true
-                              maximumQueryCost:
-                                anyOf:
-                                  - type: integer
-                                  - type: string
-                                x-kubernetes-int-or-string: true
-                              maximumStructureDepth:
-                                anyOf:
-                                  - type: integer
-                                  - type: string
-                                x-kubernetes-int-or-string: true
-                              maximumTotalLength:
-                                anyOf:
-                                  - type: integer
-                                  - type: string
-                                x-kubernetes-int-or-string: true
-                              maximumValueLength:
-                                anyOf:
-                                  - type: integer
-                                  - type: string
-                                x-kubernetes-int-or-string: true
-                              tolerateParsingWarnings:
-                                type: boolean
-                            type: object
-                          description:
-                            type: string
-                          metacharElementCheck:
-                            type: boolean
-                          metacharOverrides:
-                            items:
-                              properties:
-                                isAllowed:
-                                  type: boolean
-                                metachar:
-                                  type: string
-                              type: object
-                            type: array
-                          responseEnforcement:
-                            properties:
-                              blockDisallowedPatterns:
-                                type: boolean
-                              disallowedPatterns:
-                                items:
-                                  type: string
-                                type: array
-                            type: object
-                          sensetiveData:
-                            items:
-                              properties:
-                                parameterName:
-                                  type: string
-                              type: object
-                            type: array
-                          signatureOverrides:
-                            items:
-                              properties:
-                                enabled:
-                                  type: boolean
-                                name:
-                                  type: string
-                                signatureId:
-                                  type: integer
-                                tag:
-                                  type: string
-                              type: object
-                            type: array
-                          name:
-                            type: string
-                        type: object
-                      type: array
                   type: object
               type: object
           type: object
