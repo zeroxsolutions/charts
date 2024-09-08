@@ -1,7 +1,9 @@
+# OS
 .DS_Store
-Chart.lock
+# Lock file
+*.lock
+# Vendor
 *.tgz
 # IDE
 .idea
 .vscode
-zerox-values.yaml
