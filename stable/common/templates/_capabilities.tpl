@@ -108,19 +108,27 @@ Return the appropriate apiVersion for PersistentVolume resources.
 {{- define "common.capabilities.persistentVolume.apiVersion" -}}
 {{- print "v1" -}}
 {{- end -}}
-
+{{/*
+Return the appropriate apiVersion for CustomResourceDefinition resources.
+*/}}
 {{- define "common.capabilities.customResourceDefinition.apiVersion" -}}
 {{- print "apiextensions.k8s.io/v1"  -}}
 {{- end -}}
-
+{{/*
+Return the appropriate apiVersion for GlobalConfiguration resources.
+*/}}
 {{- define "common.capabilities.globalConfiguration.apiVersion" -}}
 {{- print "k8s.nginx.org/v1"  -}}
 {{- end -}}
-
+{{/*
+Return the appropriate apiVersion for PodDisruptionBudget resources.
+*/}}
 {{- define "common.capabilities.podDisruptionBudget.apiVersion" -}}
 {{- print "policy/v1"  -}}
 {{- end -}}
-
+{{/*
+Return the appropriate apiVersion for ServiceMonitor resources.
+*/}}
 {{- define "common.capabilities.serviceMonitor.apiVersion" -}}
 {{- print "monitoring.coreos.com/v1"  -}}
 {{- end -}}
