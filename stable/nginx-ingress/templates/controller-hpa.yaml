@@ -2,7 +2,7 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if and .Values.autoscaling.enabled (or (eq .Values.controller.kind "deployment") (eq .Values.controller.kind "both")) (.Capabilities.APIVersions.Has (include "common.capabilities.autoscaling.apiVersion" .)) }}
+{{- if and .Values.controller.autoscaling.enabled (or (eq .Values.controller.kind "deployment") (eq .Values.controller.kind "both")) (.Capabilities.APIVersions.Has (include "common.capabilities.autoscaling.apiVersion" .)) }}
 apiVersion: {{ include "common.capabilities.autoscaling.apiVersion" . }}
 kind: HorizontalPodAutoscaler
 metadata:
@@ -10,36 +10,36 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
-	{{- if .Values.autoscaling.annotations }}
+	{{- if .Values.controller.autoscaling.annotations }}
   annotations:
-		{{- toYaml .Values.autoscaling.annotations | nindent 4 }}
+		{{- toYaml .Values.controller.autoscaling.annotations | nindent 4 }}
 	{{- end }}
 spec:
   scaleTargetRef:
     apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
     kind: Deployment
     name: {{ include "nginx-ingress.controller.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
-	{{- if .Values.autoscaling.behavior }}
+  minReplicas: {{ .Values.controller.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.controller.autoscaling.maxReplicas }}
+	{{- if .Values.controller.autoscaling.behavior }}
   behavior:
-    {{- toYaml .Values.autoscaling.behavior | nindent 4 }}
+    {{- toYaml .Values.controller.autoscaling.behavior | nindent 4 }}
 	{{- end }}
   metrics:
-    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+          averageUtilization: {{ .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
-    {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
     {{- end }}
 {{- end }}

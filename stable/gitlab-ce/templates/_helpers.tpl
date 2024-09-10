@@ -26,9 +26,22 @@ Return name of PostgreSQL
 {{/*
 Return redis url
 */}}
-{{- define "gitlab-ce.redis.url" -}}
+{{- define "gitlab-ce.redis-ha.url" -}}
 {{- if not .Values.redis.enabled }}
 {{- else }}
 
 {{- end }}
+{{- end -}}
+
+{{/*
+Return redis ha fullname
+*/}}
+{{- define "gitlab-ce.redis-ha.fullname" -}}
+{{- print "%s-%s" (include "common.fullname".) "redis-ha" -}}
+{{- end -}}
+{{/*
+Return redis ha namespace
+*/}}
+{{- define "gitlab-ce.redis-ha.namespace"-}}
+{{- default .Release.Namespace .Values.redis-ha.namespaceOverride |  -}}
 {{- end -}}

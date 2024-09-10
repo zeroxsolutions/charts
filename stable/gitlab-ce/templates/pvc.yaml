@@ -1,0 +1,13 @@
+{{/*
+Copyright ZeroX.
+*/}}
+{{- if and .Values.controller.pvc.create ( or .Values.controller.pvc.volumeName .Values.controller.pv.create ) }}
+apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  storageClassName: {{ .Values.controller.pvc.storageClassName | default "" }} 
+  volumeName: {{ include "common.fullname" . | default .Values.controller.pvc.volumeName }}
+{{- end }}

@@ -1,7 +1,7 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if .Values.autoscaling.enabled }}
+{{- if .Values.controller.autoscaling.enabled }}
 apiVersion: {{ include "common.capabilities.autoscaling.apiVersion" . }}
 kind: HorizontalPodAutoscaler
 metadata:
@@ -13,23 +13,23 @@ spec:
     apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
     kind: Deployment
     name: {{ include "common.fullname" . }}
-  minReplicas: {{ .Values.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  minReplicas: {{ .Values.controller.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.controller.autoscaling.maxReplicas }}
   metrics:
-    {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
     {{- end }}
-    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
+          averageUtilization: {{ .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
 {{- end }}

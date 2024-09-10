@@ -1,34 +1,6 @@
 {
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "properties": {
-        "autoscaling": {
-            "properties": {
-                "annotations": {
-                    "properties": {},
-                    "type": "object"
-                },
-                "behavior": {
-                    "properties": {},
-                    "type": "object"
-                },
-                "enabled": {
-                    "type": "boolean"
-                },
-                "maxReplicas": {
-                    "type": "integer"
-                },
-                "minReplicas": {
-                    "type": "integer"
-                },
-                "targetCPUUtilizationPercentage": {
-                    "type": "integer"
-                },
-                "targetMemoryUtilizationPercentage": {
-                    "type": "integer"
-                }
-            },
-            "type": "object"
-        },
         "controller": {
             "properties": {
                 "affinity": {
@@ -153,6 +125,34 @@
                             "type": "integer"
                         },
                         "memory": {
+                            "type": "integer"
+                        }
+                    },
+                    "type": "object"
+                },
+                "autoscaling": {
+                    "properties": {
+                        "annotations": {
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "behavior": {
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "enabled": {
+                            "type": "boolean"
+                        },
+                        "maxReplicas": {
+                            "type": "integer"
+                        },
+                        "minReplicas": {
+                            "type": "integer"
+                        },
+                        "targetCPUUtilizationPercentage": {
+                            "type": "integer"
+                        },
+                        "targetMemoryUtilizationPercentage": {
                             "type": "integer"
                         }
                     },
@@ -331,12 +331,7 @@
                     "type": "array"
                 },
                 "kind": {
-                    "type": "string",
-                    "enum": [
-                        "deployment",
-                        "daemonset",
-                        "both"
-                    ]
+                    "type": "string"
                 },
                 "lifecycle": {
                     "properties": {},
@@ -542,6 +537,24 @@
                     },
                     "type": "object"
                 },
+                "serviceAccount": {
+                    "properties": {
+                        "annotations": {
+                            "properties": {},
+                            "type": "object"
+                        },
+                        "create": {
+                            "type": "boolean"
+                        },
+                        "imagePullSecretName": {
+                            "type": "string"
+                        },
+                        "imagePullSecretsNames": {
+                            "type": "array"
+                        }
+                    },
+                    "type": "object"
+                },
                 "shareProcessNamespace": {
                     "type": "boolean"
                 },
@@ -600,13 +613,13 @@
         },
         "global": {
             "properties": {
-                "fullname": {
+                "fullnameOverride": {
                     "type": "string"
                 },
                 "kubeVersion": {
                     "type": "string"
                 },
-                "name": {
+                "nameOverride": {
                     "type": "string"
                 }
             },
@@ -769,24 +782,6 @@
                 },
                 "create": {
                     "type": "boolean"
-                }
-            },
-            "type": "object"
-        },
-        "serviceAccount": {
-            "properties": {
-                "annotations": {
-                    "properties": {},
-                    "type": "object"
-                },
-                "create": {
-                    "type": "boolean"
-                },
-                "imagePullSecretName": {
-                    "type": "string"
-                },
-                "imagePullSecretsNames": {
-                    "type": "array"
                 }
             },
             "type": "object"

@@ -1,7 +1,7 @@
 {{/*
 Copyright ZeroX.
 */}}
-apiVersion: v1
+apiVersion: {{ include "common.capabilities.service.apiVersion" . }}
 kind: Service
 metadata:
   name: {{ include "common.fullname" . }}

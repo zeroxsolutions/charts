@@ -1,14 +1,14 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if .Values.pv.create }}
-apiVersion: v1
+{{- if .Values.controller.pv.create }}
+apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}
 kind: PersistentVolume
 metadata:
   name: {{ include "common.fullname" . }}
 spec:
-  storageClassName: {{ .Values.pvc.storageClassName | default "" }} 
+  storageClassName: {{ .Values.controller.pvc.storageClassName | default "" }} 
   claimRef:
-    name: {{ .Values.pv.claimRef.name | default ( include "common.fullname" . )  }}
-    namespace: {{ .Values.pv.claimRef.namespace | default .Release.Namespace }}
+    name: {{ .Values.controller.pv.claimRef.name | default ( include "common.fullname" . )  }}
+    namespace: {{ .Values.controller.pv.claimRef.namespace | default .Release.Namespace }}
 {{- end }}
