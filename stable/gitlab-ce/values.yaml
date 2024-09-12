@@ -204,7 +204,7 @@ postgres-ha:
 # Redis HA configuration
 redis-ha:
   # Enable a new Redis server
-  enabled: false
+  enabled: true
 
   namespaceOverride:
 

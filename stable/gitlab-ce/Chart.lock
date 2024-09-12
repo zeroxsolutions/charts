@@ -1,0 +1,12 @@
+dependencies:
+- name: common
+  repository: file://../common
+  version: 0.0.1
+- name: redis-ha
+  repository: file://../redis-ha
+  version: 0.0.1
+- name: postgres-ha
+  repository: file://../postgres-ha
+  version: 0.0.1
+digest: sha256:85877bcef82b8c67453379e82b93bd5aaf9ead6aaf61d357c47daf5ebd69f13a
+generated: "2024-09-12T11:24:56.905497755+07:00"

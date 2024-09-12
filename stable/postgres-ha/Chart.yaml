@@ -1,16 +1,16 @@
 # Copyright ZeroX.
 apiVersion: v2
-name: redis-ha
-description: Redis (Remote Dictionary Server) is an open source, in-memory, NoSQL key/value store that is used primarily as an application cache or quick-response database.
+name: postgres-ha
+description: PostgreSQL is a powerful, open source object-relational database system with over 35 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
 type: application
 version: 0.0.1
-appVersion: "7.4.0"
+appVersion: "13.12"
 home: https://zeroxsolutions.com
 keywords:
-  - "redis"
+  - "database"
   - "helm"
-  - "cached"
-  - "nosql"
+  - "sql"
+  - "postgres"
 annotations:
   category: "infrastructure"
 maintainers:
