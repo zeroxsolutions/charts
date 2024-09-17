@@ -8,9 +8,9 @@ metadata:
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.controller.service.type }}
   ports:
-  - port: {{ .Values.service.externalPort }}
+  - port: {{ .Values.controller.service.port }}
     targetPort: {{ .Values.service.internalPort }}
     protocol: TCP
     name: {{ .Values.service.name }}

@@ -47,7 +47,7 @@ rules:
     resources:
       - leases
     resourceNames:
-      - {{ .Values.controller.reportIngressStatus.leaderElectionLockName }}
+      - {{ .Values.reportIngressStatus.leaderElectionLockName }}
     verbs:
       - get
       - update

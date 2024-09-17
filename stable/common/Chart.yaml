@@ -1,7 +1,7 @@
 # Copyright ZeroX.
 apiVersion: v2
 name: common
-description: common library helm charts
+description: Common library helm charts
 type: application
 version: 0.0.1
 home: https://zeroxsolutions.com

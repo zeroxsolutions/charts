@@ -1,16 +1,88 @@
 # Copyright ZeroX.
 
+# Global
 global:
 
-controller:
-  image:
-    registry:
-    name:
-    version:
+  kubeVersion:
+  
+  nameOverride:
 
-  service:
+  fullnameOverride:
 
-  serviceAccount:
-    create:
+  namespaceOverride:
 
-    name:
+  commonLabels: {}
+
+  commonAnnotations: {}
+
+  clusterDomain: cluster.local
+
+# Image
+image:
+  registry:
+
+  repository: linuxserver/code-server
+
+  tag:
+
+name: code-server
+
+selectorLabels: {}
+
+containerPort:
+  http:
+
+password:
+
+sudoPassword:
+
+passwordHash:
+
+sudoPasswordHash:
+
+service:
+  create:
+
+  type:
+
+  ports:
+
+    http:
+
+  clusterIP:
+
+  nodePort:
+
+serviceAccount:
+  create:
+
+  name:
+
+ingress:
+  enabled:
+
+  annotations:
+
+  ingressClassName:
+
+  pathType:
+
+  extraRules:
+
+  extraPaths:
+
+  host:
+
+  extraHosts:
+
+  tls:
+
+  extraTls:
+    # - key:
+    #   crt:
+
+persistence:
+
+  create: false
+
+  storageClassName:

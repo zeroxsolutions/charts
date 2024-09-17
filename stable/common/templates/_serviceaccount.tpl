@@ -6,9 +6,9 @@ Copyright ZeroX.
 Create the name of the service account to use
 */}}
 {{- define "common.serviceAccount.name" }}
-{{- if .Values.controller.serviceAccount.create }}
-{{- default (include "common.fullname" .) .Values.controller.serviceAccount.name }}
+{{- if .Values.serviceAccount.create }}
+{{- default (include "common.fullname" .) .Values.serviceAccount.name }}
 {{- else }}
-{{- default "default" .Values.controller.serviceAccount.name }}
+{{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}

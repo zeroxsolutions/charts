@@ -2,44 +2,44 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if and .Values.controller.autoscaling.enabled (or (eq .Values.controller.kind "deployment") (eq .Values.controller.kind "both")) (.Capabilities.APIVersions.Has (include "common.capabilities.autoscaling.apiVersion" .)) }}
+{{- if and .Values.autoscaling.enabled (or (eq .Values.kind "deployment") (eq .Values.kind "both")) (.Capabilities.APIVersions.Has (include "common.capabilities.autoscaling.apiVersion" .)) }}
 apiVersion: {{ include "common.capabilities.autoscaling.apiVersion" . }}
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "nginx-ingress.controller.fullname" . }}
+  name: {{ include "nginx-ingress.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
-	{{- if .Values.controller.autoscaling.annotations }}
+	{{- if .Values.autoscaling.annotations }}
   annotations:
-		{{- toYaml .Values.controller.autoscaling.annotations | nindent 4 }}
+		{{- toYaml .Values.autoscaling.annotations | nindent 4 }}
 	{{- end }}
 spec:
   scaleTargetRef:
     apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
     kind: Deployment
-    name: {{ include "nginx-ingress.controller.fullname" . }}
-  minReplicas: {{ .Values.controller.autoscaling.minReplicas }}
-  maxReplicas: {{ .Values.controller.autoscaling.maxReplicas }}
-	{{- if .Values.controller.autoscaling.behavior }}
+    name: {{ include "nginx-ingress.fullname" . }}
+  minReplicas: {{ .Values.autoscaling.minReplicas }}
+  maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+	{{- if .Values.autoscaling.behavior }}
   behavior:
-    {{- toYaml .Values.controller.autoscaling.behavior | nindent 4 }}
+    {{- toYaml .Values.autoscaling.behavior | nindent 4 }}
 	{{- end }}
   metrics:
-    {{- if .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
+    {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.controller.autoscaling.targetMemoryUtilizationPercentage }}
+          averageUtilization: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}
     {{- end }}
-    {{- if .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
+    {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource
       resource:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.controller.autoscaling.targetCPUUtilizationPercentage }}
+          averageUtilization: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}
     {{- end }}
 {{- end }}

@@ -73,7 +73,7 @@ rules:
     verbs:
       - get
       - list
-  {{- if .Values.controller.reportIngressStatus.enable }}
+  {{- if .Values.reportIngressStatus.enable }}
   - apiGroups:
       - networking.k8s.io
     resources:
@@ -81,7 +81,7 @@ rules:
     verbs:
       - update
   {{- end }}
-  {{- if .Values.controller.appprotect.enable }}
+  {{- if .Values.appprotect.enable }}
   - apiGroups:
       - appprotect.f5.com
     resources:
@@ -93,7 +93,7 @@ rules:
       - watch
       - list
   {{- end }}
-  {{- if .Values.controller.appprotectdos.enable }}
+  {{- if .Values.appprotectdos.enable }}
   - apiGroups:
       - appprotectdos.f5.com
     resources:
@@ -105,7 +105,7 @@ rules:
       - watch
       - list
   {{- end }}
-  {{- if .Values.controller.enableCustomResources }}
+  {{- if .Values.enableCustomResources }}
   - apiGroups:
       - k8s.nginx.org
     resources:
@@ -128,7 +128,7 @@ rules:
     verbs:
       - update
   {{- end }}
-  {{- if .Values.controller.reportIngressStatus.ingressLink }}
+  {{- if .Values.reportIngressStatus.ingressLink }}
   - apiGroups:
       - cis.f5.com
     resources:
@@ -138,7 +138,7 @@ rules:
       - watch
       - get
   {{- end }}
-  {{- if .Values.controller.enableCertManager }}
+  {{- if .Values.enableCertManager }}
   - apiGroups:
       - cert-manager.io
     resources:
@@ -151,7 +151,7 @@ rules:
       - create
       - delete
   {{- end }}
-  {{- if .Values.controller.enableExternalDNS }}
+  {{- if .Values.enableExternalDNS }}
   - apiGroups:
       - externaldns.nginx.org
     resources:

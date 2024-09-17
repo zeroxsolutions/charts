@@ -1,6 +1,5 @@
-controller:
-  name: controller
-  enableLatencyMetrics: true
+name: controller
+enableLatencyMetrics: true
 nginxServiceMesh:
   enable: true
   enableEgress: true

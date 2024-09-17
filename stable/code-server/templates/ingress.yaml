@@ -1,22 +1,30 @@
-{{- if .Values.ingress.enabled -}}
-{{- $serviceName :=  . -}}
-{{- $servicePort := .Values.service.externalPort -}}
-apiVersion: extensions/v1beta1
+{{- if .Values.controller.ingress.enabled -}}
+{{- $kubeVersion := include "common.capabilities.kubeVersion" . -}}
+{{- $fullName := include "common.fullname" . -}}
+{{- $servicePort := .Values.controller.service.port  -}}
+{{- if and .Values.controller.ingress.ingressClassName (not (semverCompare ">=1.18-0" $kubeVersion)) }}
+  {{- if not (hasKey .Values.controller.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.controller.ingress.annotations "kubernetes.io/ingress.class" .Values.controller.ingress.ingressClassName }}
+  {{- end }}
+{{- else if and (hasKey .Values.controller.ingress.annotations "kubernetes.io/ingress.class") (semverCompare ">=1.18-0" $kubeVersion) }}
+{{- $_ := unset .Values.controller.ingress.annotations "kubernetes.io/ingress.class" }}
+{{- end }}
+apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
-  name: 
+  name: {{ $fullName }}
   labels:
-    app: 
-    chart: "{{ .Chart.Name }}-{{ .Chart.Version | replace "+" "_" }}"
-    release: "{{ .Release.Name }}"
-    heritage: "{{ .Release.Service }}"
+    {{- include "common.labels" . | nindent 4 -}}
+  {{- with .Values.ingress.annotations }}
   annotations:
-    {{- range $key, $value := .Values.ingress.annotations }}
-      {{ $key }}: {{ $value | quote }}
-    {{- end }}
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
 spec:
+  {{- if and .Values.controller.ingress.ingressClassName (semverCompare ">=1.18-0" $kubeVersion) }}
+  ingressClassName: {{ default "nginx" .Values.controller.ingress.ingressClassName }}
+  {{- end }}
   rules:
-    {{- range $host := .Values.ingress.hosts }}
+    {{- range $host := .Values.controller.ingress.hosts }}
     - host: {{ $host }}
       http:
         paths:
@@ -27,6 +35,6 @@ spec:
     {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
-{{ toYaml .Values.ingress.tls | indent 4 }}
+    {{- toYaml .Values.ingress.tls | nindent 4 -}}
   {{- end -}}
 {{- end -}}

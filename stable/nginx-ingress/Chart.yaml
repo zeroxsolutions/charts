@@ -1,6 +1,6 @@
 # Copyright ZeroX.
 apiVersion: v2
-name: nginx-ingress
+name: nginx-ingress-controller
 description: NGINX Ingress Controller
 icon: file://./icon.png
 type: application

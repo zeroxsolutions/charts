@@ -2,14 +2,14 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{ if .Values.controller.ingressClass.create }}
+{{ if .Values.ingressClass.create }}
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: IngressClass
 metadata:
-  name: {{ .Values.controller.ingressClass.name }}
+  name: {{ .Values.ingressClass.name }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
-  {{- if .Values.controller.ingressClass.setAsDefaultIngress }}
+  {{- if .Values.ingressClass.setAsDefaultIngress }}
   annotations:
     ingressclass.kubernetes.io/is-default-class: "true"
   {{- end }}

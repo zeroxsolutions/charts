@@ -2,21 +2,21 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if or (eq .Values.controller.kind "deployment") (eq .Values.controller.kind "both") -}}
+{{- if or (eq .Values.kind "deployment") (eq .Values.kind "both") -}}
 apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
-  name: {{ include "nginx-ingress.controller.fullname" . }}
+  name: {{ include "nginx-ingress.fullname" . }}
   namespace: {{ .Release.Namespace }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
-  {{- if .Values.controller.annotations }}
+  {{- if .Values.annotations }}
   annotations: 
-    {{- toYaml .Values.controller.annotations | nindent 4 }}
+    {{- toYaml .Values.annotations | nindent 4 }}
   {{- end }}
 spec:
-  {{- if not .Values.controller.autoscaling.enabled }}
-  replicas: {{ .Values.controller.replicaCount }}
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
@@ -25,67 +25,67 @@ spec:
     metadata:
       labels:
         {{- include "nginx-ingress.podLabels" . | nindent 8 }}
-      {{- if or .Values.prometheus.create .Values.controller.pod.annotations }}
+      {{- if or .Values.prometheus.create .Values.pod.annotations }}
       annotations:
         {{- if .Values.prometheus.create }}
         prometheus.io/scrape: "true"
         prometheus.io/port: "{{ .Values.prometheus.port }}"
         prometheus.io/scheme: "{{ .Values.prometheus.scheme }}"
         {{- end }}
-        {{- if .Values.controller.pod.annotations }}
-        {{- toYaml .Values.controller.pod.annotations | nindent 8 }}
+        {{- if .Values.pod.annotations }}
+        {{- toYaml .Values.pod.annotations | nindent 8 }}
         {{- end }}
       {{- end }}
     spec:
-      {{- if .Values.controller.nodeSelector }}
+      {{- if .Values.nodeSelector }}
       nodeSelector:
-        {{- toYaml .Values.controller.nodeSelector | nindent 8 }}
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
       {{- end }}
-      {{- if .Values.controller.tolerations }}
+      {{- if .Values.tolerations }}
       tolerations:
-        {{- toYaml .Values.controller.tolerations | nindent 8 }}
+        {{- toYaml .Values.tolerations | nindent 8 }}
       {{- end }}
-      {{- if .Values.controller.affinity }}
+      {{- if .Values.affinity }}
       affinity:
-        {{- toYaml .Values.controller.affinity | nindent 8 }}
+        {{- toYaml .Values.affinity | nindent 8 }}
       {{- end }}
-      {{- if .Values.controller.topologySpreadConstraints }}
+      {{- if .Values.topologySpreadConstraints }}
       topologySpreadConstraints:
-        {{- toYaml .Values.controller.topologySpreadConstraints | nindent 8 }}
+        {{- toYaml .Values.topologySpreadConstraints | nindent 8 }}
       {{- end }}
       {{- include "nginx-ingress.volumes" .  | nindent 6 }}
-      {{- if .Values.controller.priorityClassName }}
-      priorityClassName: {{ .Values.controller.priorityClassName }}
+      {{- if .Values.priorityClassName }}
+      priorityClassName: {{ .Values.priorityClassName }}
       {{- end }}
       serviceAccountName: {{ include "common.serviceAccount.name" . }}
       automountServiceAccountToken: true
       securityContext:
-        {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
-      terminationGracePeriodSeconds: {{ .Values.controller.terminationGracePeriodSeconds }}
-      hostNetwork: {{ .Values.controller.hostNetwork }}
-      dnsPolicy: {{ .Values.controller.dnsPolicy }}
-      {{- if .Values.controller.shareProcessNamespace }}
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      hostNetwork: {{ .Values.hostNetwork }}
+      dnsPolicy: {{ .Values.dnsPolicy }}
+      {{- if .Values.shareProcessNamespace }}
       shareProcessNamespace: true
       {{- end }}
       containers:
         - image: {{ include "nginx-ingress.image" . }}
           name: {{ include "common.name" . }}
-          imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
-          {{- if .Values.controller.lifecycle }}
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          {{- if .Values.lifecycle }}
           lifecycle:
-            {{- toYaml .Values.controller.lifecycle | nindent 12 }}
+            {{- toYaml .Values.lifecycle | nindent 12 }}
           {{- end }}
           ports:
-            {{- range $key, $value := .Values.controller.containerPort }}
+            {{- range $key, $value := .Values.containerPort }}
             - name: {{ $key }}
               containerPort: {{ $value }}
               protocol: TCP
-              {{- if and $.Values.controller.hostPort.enable (index $.Values.controller.hostPort $key) }}
-              hostPort: {{ index $.Values.controller.hostPort $key }}
+              {{- if and $.Values.hostPort.enable (index $.Values.hostPort $key) }}
+              hostPort: {{ index $.Values.hostPort $key }}
               {{- end }}
             {{- end }}
-            {{- if .Values.controller.customPorts }}
-            {{- toYaml .Values.controller.customPorts | nindent 12 }}
+            {{- if .Values.customPorts }}
+            {{- toYaml .Values.customPorts | nindent 12 }}
             {{- end }}
             {{- if .Values.prometheus.create }}
             - name: prometheus
@@ -95,27 +95,27 @@ spec:
             - name: service-insight
               containerPort: {{ .Values.serviceInsight.port }}
             {{- end }}
-            {{- if .Values.controller.readyStatus.enable }}
+            {{- if .Values.readyStatus.enable }}
             - name: readiness-port
-              containerPort: {{ .Values.controller.readyStatus.port }}
+              containerPort: {{ .Values.readyStatus.port }}
             {{- end }}
-          {{- if .Values.controller.readyStatus.enable }}
+          {{- if .Values.readyStatus.enable }}
           readinessProbe:
             httpGet:
               path: /nginx-ready
               port: readiness-port
             periodSeconds: 1
-            initialDelaySeconds: {{ .Values.controller.readyStatus.initialDelaySeconds }}
+            initialDelaySeconds: {{ .Values.readyStatus.initialDelaySeconds }}
           {{- end }}
           resources:
-            {{- toYaml .Values.controller.resources | nindent 12 }}
-          {{- if .Values.controller.securityContext }}
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- if .Values.securityContext }}
           securityContext:
-            {{- toYaml .Values.controller.securityContext | nindent 12 }}
+            {{- toYaml .Values.securityContext | nindent 12 }}
           {{- else }}
           securityContext:
             allowPrivilegeEscalation: false
-            readOnlyRootFilesystem: {{ .Values.controller.readOnlyRootFilesystem }}
+            readOnlyRootFilesystem: {{ .Values.readOnlyRootFilesystem }}
             runAsUser: 101 #nginx
             runAsNonRoot: true
             capabilities:
@@ -134,8 +134,8 @@ spec:
               valueFrom:
                 fieldRef:
                   fieldPath: metadata.name
-            {{- if .Values.controller.env }}
-              {{- toYaml .Values.controller.env | nindent 12 }}
+            {{- if .Values.env }}
+              {{- toYaml .Values.env | nindent 12 }}
             {{- end }}
             {{- if .Values.nginxServiceMesh.enable }}
             - name: POD_SERVICEACCOUNT
@@ -145,25 +145,25 @@ spec:
             {{- end }}
           args:
             {{- include "nginx-ingress.args" . | nindent 12 }}
-        {{- if .Values.controller.extraContainers }}
-        {{- toYaml .Values.controller.extraContainers | nindent 8 }}
+        {{- if .Values.extraContainers }}
+        {{- toYaml .Values.extraContainers | nindent 8 }}
         {{- end }}
         {{- include "nginx-ingress.appprotect.v5" . | nindent 8 }}
-      {{- if or ( eq (include "nginx-ingress.readOnlyRootFilesystem" .) "true" ) .Values.controller.initContainers }}
+      {{- if or ( eq (include "nginx-ingress.readOnlyRootFilesystem" .) "true" ) .Values.initContainers }}
       initContainers:
       {{- end }}
         {{- if eq (include "nginx-ingress.readOnlyRootFilesystem" .) "true" }}
         - name: init-{{ include "nginx-ingress.name" . }}
           image: {{ include "nginx-ingress.image" . }}
-          imagePullPolicy: "{{ .Values.controller.image.pullPolicy }}"
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command: ['cp', '-vdR', '/etc/nginx/.', '/mnt/etc']
-          {{- if .Values.controller.initContainerResources }}
+          {{- if .Values.initContainerResources }}
           resources:
-            {{- toYaml .Values.controller.initContainerResources | nindent 12 }}
+            {{- toYaml .Values.initContainerResources | nindent 12 }}
           {{- end }}
-          {{- if .Values.controller.initContainerSecurityContext }}
+          {{- if .Values.initContainerSecurityContext }}
           securityContext:
-            {{- toYaml .Values.controller.initContainerSecurityContext | nindent 12 }}
+            {{- toYaml .Values.initContainerSecurityContext | nindent 12 }}
           {{- else }}
           securityContext:
             allowPrivilegeEscalation: false
@@ -178,14 +178,14 @@ spec:
             - mountPath: /mnt/etc
               name: nginx-etc
         {{- end }}
-        {{- if .Values.controller.initContainers }}
-        {{- toYaml .Values.controller.initContainers | nindent 8 }}
+        {{- if .Values.initContainers }}
+        {{- toYaml .Values.initContainers | nindent 8 }}
         {{- end }}
-  {{- if .Values.controller.strategy }}
+  {{- if .Values.strategy }}
   strategy:
-    {{- toYaml .Values.controller.strategy | nindent 4 }}
+    {{- toYaml .Values.strategy | nindent 4 }}
   {{- end }}
-  {{- if .Values.controller.minReadySeconds }}
-  minReadySeconds: {{ .Values.controller.minReadySeconds }}
+  {{- if .Values.minReadySeconds }}
+  minReadySeconds: {{ .Values.minReadySeconds }}
   {{- end }}
 {{- end -}}
