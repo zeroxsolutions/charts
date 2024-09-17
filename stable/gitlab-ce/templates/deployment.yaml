@@ -31,7 +31,7 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork | default false }}
-      serviceAccountName: {{ include "common.serviceAccountName" . }}
+      serviceAccountName: {{ include "common.serviceAccount.name" . }}
       {{- if .Values.controller.podSecurityContext }}
       securityContext:
         {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}

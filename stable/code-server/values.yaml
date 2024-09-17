@@ -1,1 +1,16 @@
 # Copyright ZeroX.
+
+global:
+
+controller:
+  image:
+    registry:
+    name:
+    version:
+
+  service:
+
+  serviceAccount:
+    create:
+
+    name:

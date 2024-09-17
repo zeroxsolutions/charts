@@ -1,7 +1,8 @@
 # Copyright ZeroX.
 apiVersion: v2
 name: code-server
-description: Code Server helm chart setup
+description: Run VS Code on any machine anywhere and access it in the browser.
+icon: file://./icon.png
 type: application
 version: 0.0.1
 appVersion: "4.17.1" # linuxserver/code-server:4.17.1

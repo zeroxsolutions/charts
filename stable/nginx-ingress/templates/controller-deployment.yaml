@@ -57,7 +57,7 @@ spec:
       {{- if .Values.controller.priorityClassName }}
       priorityClassName: {{ .Values.controller.priorityClassName }}
       {{- end }}
-      serviceAccountName: {{ include "common.serviceAccountName" . }}
+      serviceAccountName: {{ include "common.serviceAccount.name" . }}
       automountServiceAccountToken: true
       securityContext:
         {{- toYaml .Values.controller.podSecurityContext | nindent 8 }}
