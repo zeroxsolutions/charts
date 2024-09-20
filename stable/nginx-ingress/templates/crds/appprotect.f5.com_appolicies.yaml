@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 apiVersion: {{ include "common.capabilities.customResourceDefinition.apiVersion" . }}
 kind: CustomResourceDefinition
 metadata:

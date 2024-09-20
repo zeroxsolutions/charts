@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{- if .Values.reportIngressStatus.enableLeaderElection }}
 apiVersion: {{ include "common.capabilities.configMap.apiVersion" . }}
 kind: ConfigMap

@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{- if .Values.prometheus.serviceMonitor.create }}
 apiVersion: {{ include "common.capabilities.serviceMonitor.apiVersion" . }}
 kind: ServiceMonitor

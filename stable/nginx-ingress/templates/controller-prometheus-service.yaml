@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{- if and .Values.prometheus.create .Values.prometheus.service.create}}
 apiVersion: {{ include "common.capabilities.service.apiVersion" . }}
 kind: Service

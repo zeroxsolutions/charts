@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{- if or (eq .Values.kind "daemonset") (eq .Values.kind "both") -}}
 apiVersion: apps/v1
 kind: DaemonSet

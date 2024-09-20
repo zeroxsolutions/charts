@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{- if and .Values.autoscaling.enabled (or (eq .Values.kind "deployment") (eq .Values.kind "both")) (.Capabilities.APIVersions.Has (include "common.capabilities.autoscaling.apiVersion" .)) }}
 apiVersion: {{ include "common.capabilities.autoscaling.apiVersion" . }}
 kind: HorizontalPodAutoscaler

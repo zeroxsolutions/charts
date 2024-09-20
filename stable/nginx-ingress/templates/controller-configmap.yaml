@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{- if not .Values.customConfigMap -}}
 apiVersion: v1
 kind: ConfigMap

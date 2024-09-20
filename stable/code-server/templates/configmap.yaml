@@ -1,0 +1,12 @@
+apiVersion: {{ include "common.capabilities.configMap.apiVersion" . }}
+kind: ConfigMap
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+data:
+  {{- if .Values.defaultWorkspace }}
+  DEFAULT_WORKSPACE: {{ .Values.defaultWorkspace }}
+  {{- end }}
+  {{- if .Values.proxyDomain }}
+  PROXY_DOMAIN: {{ .Values.proxyDomain }}
+  {{- end }}

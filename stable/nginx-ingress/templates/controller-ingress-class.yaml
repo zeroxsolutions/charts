@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{ if .Values.ingressClass.create }}
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: IngressClass

@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{ if .Values.globalConfiguration.create }}
 apiVersion: {{ include "common.capabilities.globalConfiguration.apiVersion" . }}
 kind: GlobalConfiguration
