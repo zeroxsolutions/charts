@@ -5,7 +5,7 @@ Copyright ZeroX.
 kind: ConfigMap
 apiVersion: {{ include "common.capabilities.configMap.apiVersion" . }}
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   namespace: {{ .Release.Namespace }}
 data:
   GITLAB_OMNIBUS_CONFIG: |

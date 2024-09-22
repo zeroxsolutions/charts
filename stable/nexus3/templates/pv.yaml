@@ -1,0 +1,15 @@
+{{/*
+Copyright ZeroX.
+*/}}
+{{- if .Values.persistence.enabled }}
+apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}
+kind: PersistentVolume
+metadata:
+  name: {{ include "common.names.fullname" . }}
+spec:
+  storageClassName: {{ .Values.persistence.storageClassName | default "" }} 
+  claimRef:
+    name: {{ .Values.persistence.claimRef.name | default (include "common.names.fullname" .) }}
+    namespace: {{ .Values.persistence.claimRef.namespace | default (include "common.names.namespace" .) }}
+  
+{{- end }}

@@ -1,0 +1,22 @@
+apiVersion: v2
+name: nginx-ingress
+description: NGINX Ingress Controller
+icon: file://./icon.png
+type: application
+version: 0.0.1
+appVersion: "3.6.2"
+kubeVersion: ">= 1.23.0-0"
+home: https://zeroxsolutions.com
+keywords:
+  - "nginx"
+  - "ingress"
+  - "helm"
+annotations:
+  category: "infrastructure"
+maintainers:
+  - name: ZeroX.
+    url: https://github.com/zeroxsolutions/charts
+dependencies:
+  - name: common
+    version: 0.0.1
+    repository: file://../common

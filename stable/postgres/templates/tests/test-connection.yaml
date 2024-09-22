@@ -4,7 +4,7 @@ Copyright ZeroX.
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "common.fullname" . }}-test-connection"
+  name: "{{ include "common.names.fullname" . }}-test-connection"
   labels:
     {{- include "common.labels" . | nindent 4 }}
   annotations:
@@ -14,5 +14,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "common.fullname" . }}:{{ .Values.controller.service.port }}']
+      args: ['{{ include "common.names.fullname" . }}:{{ .Values.controller.service.port }}']
   restartPolicy: Never

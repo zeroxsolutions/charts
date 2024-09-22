@@ -1,6 +1,6 @@
 # Copyright ZeroX.
 
-# Global define (Require)
+# Global define (Required)
 global:
   # Full name override
   fullnameOverride: "gitlab"
@@ -99,7 +99,7 @@ controller:
     clusterIP: ""
     # Node port configuration
     nodePort: 30080
-    
+
   # Service account configuration
   serviceAccount:
     # Create new service account
@@ -216,7 +216,4 @@ redis-ha:
     port: 6379
 
   serviceAccount:
-
     create: true
-
-

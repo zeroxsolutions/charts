@@ -1,6 +1,6 @@
 {{- if .Values.controller.ingress.enabled -}}
 {{- $kubeVersion := include "common.capabilities.kubeVersion" . -}}
-{{- $fullName := include "common.fullname" . -}}
+{{- $fullName := include "common.names.fullname" . -}}
 {{- $servicePort := .Values.controller.service.port  -}}
 {{- if and .Values.controller.ingress.ingressClassName (not (semverCompare ">=1.18-0" $kubeVersion)) }}
   {{- if not (hasKey .Values.controller.ingress.annotations "kubernetes.io/ingress.class") }}

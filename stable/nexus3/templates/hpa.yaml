@@ -1,17 +1,30 @@
+{{/*
+Copyright ZeroX.
+*/}}
+---
 {{- if .Values.autoscaling.enabled }}
-apiVersion: autoscaling/v2
+apiVersion: {{ include "common.capabilities.autoscaling.apiVersion" . }}
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "nexus3.fullname" . }}
+  name: {{ include "common.fullname" . }}
+  namespace: {{ include "common.names.namespace" . }}
   labels:
-    {{- include "nexus3.labels" . | nindent 4 }}
+    {{- include "common.labels" . | nindent 4 }}
+	{{- if .Values.autoscaling.annotations }}
+  annotations:
+		{{- toYaml .Values.autoscaling.annotations | nindent 4 }}
+	{{- end }}
 spec:
   scaleTargetRef:
-    apiVersion: apps/v1
+    apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
     kind: Deployment
-    name: {{ include "nexus3.fullname" . }}
+    name: {{ include "common.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
+  {{- if .Values.autoscaling.behavior }}
+  behavior:
+    {{- toYaml .Values.autoscaling.behavior | nindent 4 }}
+	{{- end }}
   metrics:
     {{- if .Values.autoscaling.targetCPUUtilizationPercentage }}
     - type: Resource

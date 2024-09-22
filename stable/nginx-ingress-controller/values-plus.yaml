@@ -1,5 +1,0 @@
-name: controller
-nginxplus: true
-image:
-  repository: nginx-plus-ingress
-  tag: "3.6.2"

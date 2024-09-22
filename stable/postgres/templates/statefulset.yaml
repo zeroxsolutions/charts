@@ -4,14 +4,14 @@ Copyright ZeroX.
 apiVersion: {{ include "common.capabilities.statefulSet.apiVersion" . }}
 kind: StatefulSet
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
   selector:
     matchLabels:
       {{-  include "common.selectorLabels" . | nindent 6 }}
-  serviceName: {{ include "common.fullname" . }}
+  serviceName: {{ include "common.names.fullname" . }}
   replicas: {{ default 1 .Values.controller.replicaCount }}
   template:
     metadata:
@@ -30,10 +30,10 @@ spec:
       {{- end }}
       hostNetwork: {{ .Values.controller.hostNetwork }}
       initContainers:
-        - name: {{ include "common.fullname" . }}-copy-certs
-        - name: {{ include "common.fullname" . }}-init-chmod-data
+        - name: {{ include "common.names.fullname" . }}-copy-certs
+        - name: {{ include "common.names.fullname" . }}-init-chmod-data
       containers:
-        - name: {{ include "common.fullname" . }}
+        - name: {{ include "common.names.fullname" . }}
           securityContext:
             {{- toYaml .Values.controller.securityContext | nindent 12 }}
           image: "{{ .Values.controller.registry | default "docker.io" }}/{{ required "require image tag" .Values.controller.image }}:{{ .Values.controller.version | default .Chart.AppVersion }}"
@@ -54,9 +54,9 @@ spec:
           #     port: http
           envFrom:
             - configMapRef:
-                name: {{ include "common.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
             - secretRef: 
-                name: {{ include "common.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
           env:
             {{- if .Values.controller.extraEnvs }}
             {{ toYaml .Values.controller.extraEnvs | nindent 12 }}
@@ -69,7 +69,7 @@ spec:
     - apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}
       kind: PersistentVolumeClaim
       metadata: 
-        name: {{ include "common.fullname" . }}
+        name: {{ include "common.names.fullname" . }}
       spec:
       
       

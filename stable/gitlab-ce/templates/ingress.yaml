@@ -3,7 +3,7 @@ Copyright ZeroX.
 */}}
 {{- if .Values.ingress.enabled -}}
 {{- $kubeVersion := include "common.capabilities.kubeVersion" . -}}
-{{- $fullName := include "common.fullname" . -}}
+{{- $fullName := include "common.names.fullname" . -}}
 {{- $svcHttpPort := .Values.controller.service.httpPort -}}
 {{- if and .Values.ingress.ingressClassName (not (semverCompare ">=1.18-0" $kubeVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -31,7 +31,7 @@ spec:
     {{- if .Values.ingress.host }}
     - hosts: 
         - {{ .Values.ingress.host }}
-      secretName: {{ include "common.fullname" . }}-tls
+      secretName: {{ include "common.names.fullname" . }}-tls
     {{- end }}
     {{- end }}
     {{- with .Values.ingress.extraTls }}

@@ -4,7 +4,7 @@ Copyright ZeroX.
 apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
 kind: Deployment
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
 spec:
@@ -58,9 +58,9 @@ spec:
           #     port: http
           envFrom:
             - configMapRef:
-                name: {{ include "common.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
             - secretRef: 
-                name: {{ include "common.fullname" . }}
+                name: {{ include "common.names.fullname" . }}
           env:
             {{- if .Values.controller.extraEnvs }}
             {{- toYaml .Values.controller.extraEnvs | nindent 12 }}
@@ -86,7 +86,7 @@ spec:
         - name: gitlab-home
           {{- if or .Values.pvc.create .Values.controller.persistentVolumeClaim }}
           persistentVolumeClaim:
-            claimName: {{ .Values.controller.persistentVolumeClaim | default ( include "common.fullname" . ) }}
+            claimName: {{ .Values.controller.persistentVolumeClaim | default ( include "common.names.fullname" . ) }}
           {{- else }}
           hostPath:
             path: {{ .Values.controller.volumeHostPath | default "/tmp/gitlab" }}

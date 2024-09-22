@@ -5,9 +5,9 @@ Copyright ZeroX.
 apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   namespace: {{ .Release.Namespace }}
 spec:
   storageClassName: {{ .Values.controller.pvc.storageClassName | default "" }} 
-  volumeName: {{ include "common.fullname" . | default .Values.controller.pvc.volumeName }}
+  volumeName: {{ include "common.names.fullname" . | default .Values.controller.pvc.volumeName }}
 {{- end }}

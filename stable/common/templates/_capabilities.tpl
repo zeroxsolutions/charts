@@ -151,3 +151,10 @@ Return the appropriate apiVersion for ServiceMonitor resources.
 {{- define "common.capabilities.serviceMonitor.apiVersion" -}}
 {{- print "monitoring.coreos.com/v1"  -}}
 {{- end -}}
+
+{{/*
+Return the appropriate apiVersion for Pod resources.
+*/}}
+{{- define "common.capabilities.pod.apiVersion" -}}
+{{- print "v1"  -}}
+{{- end -}}

@@ -1,107 +1,314 @@
-# Default values for nexus3.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
+# Copyright ZeroX.
 
-replicaCount: 1
+# Global define (Required)
+global:
+  # Kube version
+  kubeVersion: ""
+
+  # Common labels
+  commonLabels: {}
+
+  # Common annotations
+  commonAnnotations: {}
+
+  # Cluster domain
+  clusterDomain: cluster.local
+
+# Full name override
+fullnameOverride: nexus3
+
+# Name override
+nameOverride: nexus3
+
+# Namespace override
+namespaceOverride:
 
 image:
-  repository: nginx
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  # The image registry of the Sonatype Nexus Repository.
+  registry:
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+  # The image repository of the Sonatype Nexus Repository.
+  repository: sonatype/nexus3
+
+  # The tag of the Sonatype Nexus Repository image. If not specified the appVersion from Chart.yaml is used as a tag.
+  # tag: "3.72.0"
+  # The digest of the Sonatype Nexus Repository image.
+  # If digest is specified it has precedence over tag and will be used instead
+  # digest: "sha256:CHANGEME"
+
+  # The pull policy for the Sonatype Nexus Repository image.
+  pullPolicy: IfNotPresent
+
+# Annotations for deployment
+annotations: {}
+
+selectLabels: {}
+
+pod:
+  # The annotations of the Sonatype Nexus Repository pod.
+  annotations: {}
+
+  # The additional extra labels of the Sonatype Nexus Repository pod.
+  extraLabels: {}
+
+hostPorts:
+  # Enables hostPort for the Sonatype Nexus Repository pods.
+  enabled: false
+
+  # The HTTP hostPort configuration for the Sonatype Nexus Repository pods.
+  http: 80
+
+containerPorts:
+  # The HTTP containerPort configuration for the Sonatype Nexus Repository pods.
+  http: 8081
+
+# DNS policy for the Sonatype Nexus Repository pods
+dnsPolicy: ClusterFirst
+
+# Share process namespace between containers in the Sonatype Nexus Repository pod.
+shareProcessNamespace: false
+
+# A list of extra ports to expose on the Sonatype Nexus Repository pod. Follows the conventional Kubernetes yaml syntax for container ports.
+extraPorts: []
+
+# The lifecycle of the Sonatype Nexus Repository pods.
+lifecycle: {}
+
+# The node selector for pod assignment for the Sonatype Nexus Repository pods.
+# nodeSelector: {}
+
+# The termination grace period of the Sonatype Nexus Repository pod.
+terminationGracePeriodSeconds: 30
+
+# Enables the Sonatype Nexus Repository pods to use the host's network namespace.
+hostNetwork: false
+
+# The resources of the Sonatype Nexus Repository pods.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+# limits:
+#   cpu: 1
+#   memory: 1Gi
+
+# The security context for the Sonatype Nexus Repository pods.
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
+# The security context for the Sonatype Nexus Repository containers.
+securityContext:
+  {} # Remove curly brackets before adding values
+  # allowPrivilegeEscalation: true
+  # readOnlyRootFilesystem: true
+  # runAsUser: 101 #nginx
+  # runAsNonRoot: true
+  # capabilities:
+  #   drop:
+  #   - ALL
+  #   add:
+  #   - NET_BIND_SERVICE
+
+# The tolerations of the Sonatype Nexus Repository pods.
+tolerations: []
+
+# The affinity of the Sonatype Nexus Repository pods.
+affinity: {}
+
+# The topology spread constraints of the Sonatype Nexus Repository pods.
+# topologySpreadConstraints: {}
+
+# The PriorityClass of the Sonatype Nexus Repository pods.
+# priorityClassName: ""
+
+# Strategy used to replace old Pods by new ones. .spec.strategy.type can be "Recreate" or "RollingUpdate" for Deployments, and "OnDelete" or "RollingUpdate" for Daemonsets. "RollingUpdate" is the default value.
+strategy: {}
+
+# The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available.
+minReadySeconds: 0
+
+# The additional environment variables to be set on the Sonatype Nexus Repository pods.
+extraEnvVars: []
+# - name: MY_VAR
+#   value: myvalue
+
+# The number of replicas of the Sonatype Nexus Repository deployment.
+replicaCount: 1
+
+# Extra containers for the Sonatype Nexus Repository pods.
+extraContainers: []
+# - name: container
+#   image: busybox:1.34
+#   command: ['sh', '-c', 'echo this is a sidecar!']
+
+# Pod disruption budget for the Sonatype Nexus Repository pods.
+podDisruptionBudget:
+  # Enables PodDisruptionBudget.
+  enabled: false
+  # The annotations of the Sonatype Nexus Repository pod disruption budget.
+  annotations: {}
+  # The number of Sonatype Nexus Repository pods that should be available. This is a mutually exclusive setting with "maxUnavailable".
+  # minAvailable: 1
+  # The number of Sonatype Nexus Repository pods that can be unavailable. This is a mutually exclusive setting with "minAvailable".
+  # maxUnavailable: 1
+
+service:
+  # Creates a service to expose the Sonatype Nexus Repository pods.
+  create: true
+
+  # The type of service to create for the Sonatype Nexus Repository.
+  type: LoadBalancer
+
+  # The externalTrafficPolicy of the service. The value Local preserves the client source IP.
+  externalTrafficPolicy: Local
+
+  # The annotations of the Sonatype Nexus Repository service.
+  annotations: {}
+
+  # The extra labels of the service.
+  extraLabels: {}
+
+  # The static IP address for the load balancer. Requires service.type set to LoadBalancer. The cloud provider must support this feature.
+  loadBalancerIP: ""
+
+  # The ClusterIP for the Sonatype Nexus Repository service, autoassigned if not specified.
+  clusterIP: ""
+
+  # The list of external IPs for the Sonatype Nexus Repository service.
+  externalIPs: []
+
+  # The IP ranges (CIDR) that are allowed to access the load balancer. Requires service.type set to LoadBalancer. The cloud provider must support this feature.
+  loadBalancerSourceRanges:
+
+  # Whether to automatically allocate NodePorts (only for LoadBalancers).
+  # allocateLoadBalancerNodePorts: false
+
+  # Dual stack preference.
+  # Valid values: SingleStack, PreferDualStack, RequireDualStack
+  # ipFamilyPolicy: SingleStack
+
+  # List of IP families assigned to this service.
+  # Valid values: IPv4, IPv6
+  # ipFamilies:
+  #   - IPv6
+
+  # Ports
+  httpPort:
+    #
+    enabled: true
+
+    # The HTTP port of the Sonatype Nexus Repository service.
+    port: 8081
+
+    # The HTTP port on the POD where the Sonatype Nexus Repository service is running.
+    targetPort: 8081
+
+    # The custom NodePort for the HTTP port. Requires service.type set to NodePort or LoadBalancer.
+    # nodePort:
+
+  # A list of extra ports to expose through the Sonatype Nexus Repository service. Follows the conventional Kubernetes yaml syntax for service ports.
+  extraPorts: []
+
+# Ingress configuration
+ingress:
+  # Enable ingress
+  enabled: false
+
+  # Annotations
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+
+  # Ingress class name
+  ingressClassName: ""
+
+  # Host configuration
+  host: ""
+
+  # TLS configuration
+  tls: {}
+
+  # Extra rules configuration
+  extraRules: []
+  # Extra TLSs configuration
+  # - host: chart.example
+  #   paths:
+  #     pathType: ImplementationSpecific
+  #     path: /
+
+  extraTls: []
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
 
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
-  # Automatically mount a ServiceAccount's API credentials?
-  automount: true
-  # Annotations to add to the service account
+
+  # The annotations of the service account of the Sonatype Nexus Repository pods.
   annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
 
-podAnnotations: {}
-podLabels: {}
+  # The name of the service account of the Sonatype Nexus Repository pods. Used for RBAC.
+  # Autogenerated if not set or set to "".
+  # name: nexus3
 
-podSecurityContext: {}
-  # fsGroup: 2000
+  # The name of the secret containing docker registry credentials.
+  # Secret must exist in the same namespace as the helm release.
+  imagePullSecretName: ""
 
-securityContext: {}
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  # A list of secret names containing docker registry credentials.
+  # Secrets must exist in the same namespace as the helm release.
+  imagePullSecretsNames: []
 
-service:
-  type: ClusterIP
-  port: 80
+  #
+  automountServiceAccountToken: false
 
-ingress:
-  enabled: false
-  className: ""
-  annotations: {}
-    # kubernetes.io/ingress.class: nginx
-    # kubernetes.io/tls-acme: "true"
-  hosts:
-    - host: chart-example.local
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
-  tls: []
-  #  - secretName: chart-example-tls
-  #    hosts:
-  #      - chart-example.local
-
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
-
-livenessProbe:
-  httpGet:
-    path: /
-    port: http
-readinessProbe:
-  httpGet:
-    path: /
-    port: http
-
+# HorizontalPodAutoscaling (HPA)
 autoscaling:
+  # Enables HorizontalPodAutoscaling.
   enabled: false
+
+  # The annotations of the Ingress Controller HorizontalPodAutoscaler.
+  annotations: {}
+
+  # Minimum number of replicas for the HPA.
   minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
 
-# Additional volumes on the output Deployment definition.
-volumes: []
-# - name: foo
-#   secret:
-#     secretName: mysecret
-#     optional: false
+  # Maximum number of replicas for the HPA.
+  maxReplicas: 3
 
-# Additional volumeMounts on the output Deployment definition.
-volumeMounts: []
-# - name: foo
-#   mountPath: "/etc/foo"
-#   readOnly: true
+  # The target cpu utilization percentage.
+  targetCPUUtilizationPercentage: 50
 
-nodeSelector: {}
+  # The target memory utilization percentage.
+  targetMemoryUtilizationPercentage: 50
 
-tolerations: []
+  # Custom behavior policies
+  behavior: {}
 
-affinity: {}
+# Persistence configuration
+persistence:
+  # Enable
+  enabled: true
+
+  volumeName:
+
+  storageClassName: ""
+
+  accessModes:
+    - ReadWriteOnce
+
+  claimRef:
+
+    # name:
+
+    # namespace:
+
+  # Selector
+  # matchLabels:
+  #     release: "stable"
+  selector: {}
+
+  persistentVolumeReclaimPolicy:
