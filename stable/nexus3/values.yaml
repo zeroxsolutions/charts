@@ -293,12 +293,20 @@ persistence:
   # Enable
   enabled: true
 
-  volumeName:
+  mountPath: ""
+
+  subPath: ""
+
+  volumeName: "data"
 
   storageClassName: ""
 
   accessModes:
     - ReadWriteOnce
+
+  existingClaim: false
+
+  size: 4Gi
 
   claimRef:
 
@@ -306,7 +314,7 @@ persistence:
 
     # namespace:
 
-  # Selector
+  # Selector to match an existing Persistent Volume
   # matchLabels:
   #     release: "stable"
   selector: {}

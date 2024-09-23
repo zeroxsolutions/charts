@@ -11,5 +11,7 @@ spec:
   claimRef:
     name: {{ .Values.persistence.claimRef.name | default (include "common.names.fullname" .) }}
     namespace: {{ .Values.persistence.claimRef.namespace | default (include "common.names.namespace" .) }}
-  
+  {{- if .Values.persistence.persistentVolumeReclaimPolicy }}
+  persistentVolumeReclaimPolicy: {{ .Values.persistence.persistentVolumeReclaimPolicy }}
+  {{- end }}
 {{- end }}

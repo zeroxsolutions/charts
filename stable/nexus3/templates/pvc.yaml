@@ -1,7 +1,7 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if .Values.persistence.enabled }}
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
 apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}
 kind: PersistentVolumeClaim
 metadata:
