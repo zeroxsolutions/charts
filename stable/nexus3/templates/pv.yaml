@@ -1,17 +1,34 @@
 {{/*
 Copyright ZeroX.
 */}}
-{{- if .Values.persistence.enabled }}
+---
+{{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
 apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}
 kind: PersistentVolume
 metadata:
-  name: {{ include "common.names.fullname" . }}
+  name: {{ default (include "common.names.fullname" .) .Values.persistence.volumeName }}
 spec:
-  storageClassName: {{ .Values.persistence.storageClassName | default "" }} 
+  {{- if .Values.persistence.accessModes }}
+  accessModes:
+    {{- toYaml .Values.persistence.accessModes | nindent 4 }}
+  {{- end }}
+  {{- if .Values.persistence.size }}
+  capacity:
+    storage: {{ .Values.persistence.size }}
+  {{- end }}
+  {{- if .Values.persistence.existingClaim }}
   claimRef:
-    name: {{ .Values.persistence.claimRef.name | default (include "common.names.fullname" .) }}
-    namespace: {{ .Values.persistence.claimRef.namespace | default (include "common.names.namespace" .) }}
+    name: {{ .Values.persistence.existingClaim }}
+    namespace: {{ include "common.names.namespace" . }}
+  {{- end }}
+  {{- if .Values.persistence.volumeMode }}
+  volumeMode: {{ .Values.persistence.volumeMode }}
+  {{- end }}
   {{- if .Values.persistence.persistentVolumeReclaimPolicy }}
   persistentVolumeReclaimPolicy: {{ .Values.persistence.persistentVolumeReclaimPolicy }}
+  {{- end }}
+  {{- if .Values.persistence.hostPath }}
+  hostPath:
+    {{- toYaml .Values.persistence.hostPath | nindent 4 }}
   {{- end }}
 {{- end }}

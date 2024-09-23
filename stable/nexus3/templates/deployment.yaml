@@ -55,6 +55,27 @@ spec:
       {{- if .Values.shareProcessNamespace }}
       shareProcessNamespace: true
       {{- end }}
+      initContainers:
+        {{- if .Values.initContainers }}
+        {{- toYaml .Values.initContainers | nindent 8 }}
+        {{- end }}
+        - image: {{ include "common.images.image" . }}
+          name: {{ include "common.names.name" . }}
+          imagePullPolicy: "{{ .Values.image.pullPolicy }}"
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p {{ .Values.persistence.mountPath | quote }}
+              
+          securityContext:
+            runAsUser: 0
+          volumeMounts:
+            - name: nexus3-data
+              mountPath: {{ .Values.persistence.mountPath }}
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+              {{- end }}
       containers:
         - image: {{ include "common.images.image" . }}
           name: {{ include "common.names.name" . }}
@@ -85,8 +106,32 @@ spec:
             {{- if .Values.extraEnvVars }}
               {{- toYaml .Values.extraEnvVars | nindent 12 }}
             {{- end }}
+          volumeMounts:
+            - name: nexus3-data
+              mountPath: {{ .Values.persistence.mountPath }}
+              {{- if .Values.persistence.subPath }}
+              subPath: {{ .Values.persistence.subPath }}
+              {{- end }}
+            {{- if .Values.persistence.extraVolumeMounts }}
+            {{- toYaml .Values.persistence.extraVolumeMounts | nindent 12 }}
+            {{- end }}
         {{- if .Values.extraContainers }}
         {{- toYaml .Values.extraContainers | nindent 8 }}
+        {{- end }}
+      volumes:
+        - name: nexus3-data
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            {{- if .Values.persistence.existingClaim }}
+            claimName: {{ .Values.persistence.existingClaim }}
+            {{- else }}
+            claimName: {{ include "common.names.fullname" . }}
+            {{- end }}
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
+        {{- if .Values.persistence.extraVolumes }}
+        {{- toYaml .Values.persistence.extraVolumes | nindent 8 }}
         {{- end }}
   {{- if .Values.strategy }}
   strategy:

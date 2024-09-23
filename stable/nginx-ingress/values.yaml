@@ -538,7 +538,7 @@ telemetryReporting:
 enableWeightChangesDynamicReload: false
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # Specifies whether a service account should be created.
   create: true
 
   # The annotations of the service account of the Ingress Controller pods.
@@ -556,8 +556,11 @@ serviceAccount:
   # Secrets must exist in the same namespace as the helm release.
   imagePullSecretsNames: []
 
-  #
-  automountServiceAccountToken: false
+  # If you don't want the kubelet to automatically mount a ServiceAccount's API credentials,
+  # you can opt out of the default behavior.
+  # You can opt out of automounting API credentials on
+  # /var/run/secrets/kubernetes.io/serviceaccount/token for a service account by setting automountServiceAccountToken: false on the ServiceAccount:
+  automountServiceAccountToken: true
 
 # HorizontalPodAutoscaling (HPA)
 autoscaling:

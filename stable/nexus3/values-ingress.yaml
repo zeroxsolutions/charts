@@ -1,6 +1,0 @@
-ingress:
-  enabled: true
-
-  host: nexus3.zeroxsolutions.com
-
-  ingressClassName: nginx
