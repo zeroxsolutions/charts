@@ -60,14 +60,14 @@ spec:
         {{- toYaml .Values.initContainers | nindent 8 }}
         {{- end }}
         - image: {{ include "common.images.image" . }}
-          name: {{ include "common.names.name" . }}
+          name: {{ include "common.names.name" . }}-volume-permissions
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
             - sh
             - -c
             - |
               mkdir -p {{ .Values.persistence.mountPath | quote }}
-              
+              chown -R "{{ .Values.securityContext.runAsUser }}:{{ .Values.podSecurityContext.fsGroup }}" {{ .Values.persistence.mountPath | quote }}
           securityContext:
             runAsUser: 0
           volumeMounts:

@@ -7,10 +7,21 @@ apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}
 kind: PersistentVolume
 metadata:
   name: {{ default (include "common.names.fullname" .) .Values.persistence.volumeName }}
+  {{- if .Values.persistence.annotations }}
+  annotations:
+    {{- toYaml .Values.persistence.annotations | nindent 4 }}
+  {{- end }}
 spec:
   {{- if .Values.persistence.accessModes }}
   accessModes:
     {{- toYaml .Values.persistence.accessModes | nindent 4 }}
+  {{- end }}
+  {{- if .Values.persistence.storageClass }}
+  {{- if eq "-" .Values.persistence.storageClass }}
+  storageClassName: ""
+  {{- else }}
+  storageClassName: {{ .Values.persistence.storageClass }}
+  {{- end }}
   {{- end }}
   {{- if .Values.persistence.size }}
   capacity:
