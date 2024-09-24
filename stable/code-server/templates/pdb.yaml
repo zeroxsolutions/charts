@@ -1,0 +1,27 @@
+{{/*
+Copyright ZeroX.
+*/}}
+---
+{{- if .Values.podDisruptionBudget.enabled -}}
+apiVersion: {{ include "common.capabilities.podDisruptionBudget.apiVersion" . }}
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "common.fullname" . }}
+  namespace: {{ include "common.names.namespace" . }}
+  labels:
+    {{- include "common.labels" . | nindent 4 }}
+  {{- if .Values.podDisruptionBudget.annotations }}
+  annotations:
+    {{- toYaml .Values.podDisruptionBudget.annotations | nindent 4 }}
+  {{- end }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "common.selectorLabels" . | nindent 6 }}
+  {{- if .Values.podDisruptionBudget.minAvailable }}
+  minAvailable: {{ .Values.podDisruptionBudget.minAvailable }}
+  {{- end }}
+  {{- if .Values.podDisruptionBudget.maxUnavailable }}
+  maxUnavailable: {{ .Values.podDisruptionBudget.maxUnavailable }}
+  {{- end }}
+{{- end }}

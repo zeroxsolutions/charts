@@ -15,10 +15,10 @@ global:
   clusterDomain: cluster.local
 
 # Full name override
-fullnameOverride: nexus3
+fullnameOverride: code-server
 
 # Name override
-nameOverride: nexus3
+nameOverride: code-server
 
 # Namespace override
 namespaceOverride:
@@ -37,7 +37,7 @@ image:
   # digest: "sha256:CHANGEME"
 
   # The pull policy for the Code Server image.
-  tag:
+  pullPolicy: IfNotPresent
 
 # Annotations for deployment
 annotations: {}
@@ -60,7 +60,7 @@ hostPorts:
 
 containerPorts:
   # The HTTP containerPort configuration for the Code Server pods.
-  http: 80
+  http: 8443
 
 # DNS policy for the Code Server pods
 dnsPolicy: ClusterFirst
@@ -94,22 +94,25 @@ resources:
 
 # The security context for the Code Server pods.
 podSecurityContext:
-  fsGroup: 200
+  # Remove curly brackets before adding values
+  {}
+  # fsGroup: 0
   # seccompProfile:
   #   type: RuntimeDefault
 
 # The security context for the Code Server containers.
 securityContext:
   # Remove curly brackets before adding values
-  capabilities:
-    drop:
-      - ALL
-    # add:
-    #   - NET_BIND_SERVICE
+  {}
+  # capabilities:
+  #   drop:
+  #     - ALL
+  # add:
+  #   - NET_BIND_SERVICE
   # allowPrivilegeEscalation: true
-  readOnlyRootFilesystem: false
-  runAsNonRoot: true
-  runAsUser: 200
+  # readOnlyRootFilesystem: false
+  # runAsNonRoot: false
+  # runAsUser: 0
 
 # The tolerations of the Code Server pods.
 tolerations: []
@@ -134,6 +137,13 @@ extraEnvVars: []
 # - name: MY_VAR
 #   value: myvalue
 
+# The additional environment config from to be set on the Code Server pods.
+extraEnvFrom: []
+# - configMapRef:
+#   name: MY_CONFIGMAP
+# - secretRef:
+#   name: MY_SECRET
+
 # The number of replicas of the Code Server deployment.
 replicaCount: 1
 
@@ -143,65 +153,252 @@ extraContainers: []
 #   image: busybox:1.34
 #   command: ['sh', '-c', 'echo this is a sidecar!']
 
+# Pod disruption budget for the Code Server pods.
+podDisruptionBudget:
+  # Enables PodDisruptionBudget.
+  enabled: false
+  # The annotations of the Code Server pod disruption budget.
+  annotations: {}
+  # The number of Code Server pods that should be available. This is a mutually exclusive setting with "maxUnavailable".
+  # minAvailable: 1
+  # The number of Code Server pods that can be unavailable. This is a mutually exclusive setting with "minAvailable".
+  # maxUnavailable: 1
+
+# Extra volume mounts
+extraVolumeMounts: []
+
+# Extra volumes
+extraVolumes: []
+
+# Extra args
+extraArgs: []
+
+# PUID
+uid: 1000
+
+# PGID
+pid: 1000
+
+# Allow set empty password
 emptyPassword: false
 
-password:
+# Password when user from browser
+password: ""
 
-hashedPassword:
+# Hashed password (option)
+hashedPassword: ""
 
-sudoPassword:
+# Sudo password (sudo ...)
+sudoPassword: ""
 
-sudoPasswordHash:
+# Hashed sudo password (option)
+hashedSudoPassword: ""
 
-proxyDomain:
+# Proxy domain If this optional variable is set, this domain will be proxied for subdomain proxying. See
+# ref: https://github.com/cdr/code-server/blob/master/docs/FAQ.md#sub-domains
+proxyDomain: ""
 
-defaultWorkspace:
-
-extraArgs:
+defaultWorkspace: ""
 
 service:
-  create:
+  # Creates a service to expose the Code Server pods.
+  create: true
 
-  type:
+  # The type of service to create for the Code Server.
+  type: LoadBalancer
 
-  ports:
-    http:
+  # The externalTrafficPolicy of the service. The value Local preserves the client source IP.
+  externalTrafficPolicy: Local
 
-  clusterIP:
-
-  nodePort:
-
-serviceAccount:
-  create:
-
-  name:
-
+  # The annotations of the Code Server service.
   annotations: {}
 
+  # The extra labels of the service.
+  extraLabels: {}
+
+  # The static IP address for the load balancer. Requires service.type set to LoadBalancer. The cloud provider must support this feature.
+  loadBalancerIP: ""
+
+  # The ClusterIP for the Code Server service, autoassigned if not specified.
+  clusterIP: ""
+
+  # The list of external IPs for the Code Server service.
+  externalIPs: []
+
+  # The IP ranges (CIDR) that are allowed to access the load balancer. Requires service.type set to LoadBalancer. The cloud provider must support this feature.
+  loadBalancerSourceRanges:
+
+  # Whether to automatically allocate NodePorts (only for LoadBalancers).
+  # allocateLoadBalancerNodePorts: false
+
+  # Dual stack preference.
+  # Valid values: SingleStack, PreferDualStack, RequireDualStack
+  # ipFamilyPolicy: SingleStack
+
+  # List of IP families assigned to this service.
+  # Valid values: IPv4, IPv6
+  # ipFamilies:
+  #   - IPv6
+
+  # Ports
+  httpPort:
+    #
+    enabled: true
+
+    # The HTTP port of the Code Server service.
+    port: 8443
+
+    # The HTTP port on the POD where the Code Server service is running.
+    targetPort: 8443
+
+    # The custom NodePort for the HTTP port. Requires service.type set to NodePort or LoadBalancer.
+    # nodePort:
+
+  # A list of extra ports to expose through the Code Server service. Follows the conventional Kubernetes yaml syntax for service ports.
+  extraPorts: []
+
+# Ingress configuration
 ingress:
-  enabled:
+  # Enable ingress
+  enabled: false
 
+  # Annotations
   annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
 
-  ingressClassName:
+  # Ingress class name
+  ingressClassName: ""
 
-  pathType:
+  # Host configuration
+  host: ""
 
-  extraRules:
+  # TLS configuration
+  tls: {}
 
-  extraPaths:
+  # Extra rules configuration
+  extraRules: []
+  # Extra TLSs configuration
+  # - host: chart.example
+  #   paths:
+  #     pathType: ImplementationSpecific
+  #     path: /
 
-  host:
+  extraTls: []
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
 
-  extraHosts:
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
 
-  tls:
+  # The annotations of the service account of the Code Server pods.
+  annotations: {}
 
-  extraTls:
-    # - key:
-    #   crt:
+  # The name of the service account of the Code Server pods. Used for RBAC.
+  # Autogenerated if not set or set to "".
+  # name: code-server
 
+  # The name of the secret containing docker registry credentials.
+  # Secret must exist in the same namespace as the helm release.
+  imagePullSecretName: ""
+
+  # A list of secret names containing docker registry credentials.
+  # Secrets must exist in the same namespace as the helm release.
+  imagePullSecretsNames: []
+
+  # If you don't want the kubelet to automatically mount a ServiceAccount's API credentials,
+  # you can opt out of the default behavior.
+  # You can opt out of automounting API credentials on
+  # /var/run/secrets/kubernetes.io/serviceaccount/token for a service account by setting automountServiceAccountToken: false on the ServiceAccount:
+  automountServiceAccountToken: true
+
+# HorizontalPodAutoscaling (HPA)
+autoscaling:
+  # Enables HorizontalPodAutoscaling.
+  enabled: false
+
+  # The annotations of the Ingress Controller HorizontalPodAutoscaler.
+  annotations: {}
+
+  # Minimum number of replicas for the HPA.
+  minReplicas: 1
+
+  # Maximum number of replicas for the HPA.
+  maxReplicas: 3
+
+  # The target cpu utilization percentage.
+  targetCPUUtilizationPercentage: 50
+
+  # The target memory utilization percentage.
+  targetMemoryUtilizationPercentage: 50
+
+  # Custom behavior policies
+  behavior: {}
+
+# Enable persistence using Persistent Volume Claims
+# ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
 persistence:
-  create: false
+  # Enable persistence using PVC
+  enabled: true
 
-  storageClassName:
+  # Annotations are only applied to persistentVolumeClaim
+  # annotations:
+  #  "helm.sh/resource-policy": keep
+  mountPath: "/config"
+
+  subPath: ""
+
+  volumeName: ""
+
+  # If defined, storageClassName: <storageClass>
+  # If set to "-", storageClassName: "", which disables dynamic provisioning
+  # If undefined (the default) or set to null, no storageClassName spec is
+  #   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  #   GKE, AWS & OpenStack)
+  #
+  storageClass: "hostpath"
+
+  # Claims use the same conventions as volumes when requesting storage with specific access modes.
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+  accessModes:
+    - ReadWriteOnce
+
+  existingClaim: ""
+
+  size: 4Gi
+
+  # Kubernetes supports two volumeModes of PersistentVolumes: Filesystem and Block.
+
+  # volumeMode is an optional API parameter. Filesystem is the default mode used when volumeMode parameter is omitted.
+
+  # A volume with volumeMode: Filesystem is mounted into Pods into a directory.
+  # If the volume is backed by a block device and the device is empty,
+  # Kubernetes creates a filesystem on the device before mounting it for the first time.
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode
+  volumeMode: ""
+
+  # Claims can specify a label selector to further filter the set of volumes.
+  # Only the volumes whose labels match the selector can be bound to the claim.
+  # The selector can consist of two fields:
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
+  # matchLabels:
+  #     release: "stable"
+  selector: {}
+
+  # This is useful if you want to consume PersistentVolumes that have their persistentVolumeReclaimPolicy set to Retain,
+  # including cases where you are reusing an existing PV. (Retain,Recycle,...)
+  persistentVolumeReclaimPolicy: ""
+
+  # A hostPath volume mounts a file or directory from the host node's filesystem into your Pod.
+  # This is not something that most Pods will need, but it offers a powerful escape hatch for some applications.
+  # ref: https://kubernetes.io/docs/concepts/storage/volumes/#hostpath
+  hostPath:
+    path: "/tmp/code"
+    type: DirectoryOrCreate
+
+## initContainers Add additional init containers to the pod (evaluated as a template)
+##
+initContainers: []

@@ -1,40 +1,68 @@
-{{- if .Values.controller.ingress.enabled -}}
+{{/*
+Copyright ZeroX.
+*/}}
+---
+{{- if .Values.ingress.enabled -}}
 {{- $kubeVersion := include "common.capabilities.kubeVersion" . -}}
-{{- $fullName := include "common.names.fullname" . -}}
-{{- $servicePort := .Values.controller.service.port  -}}
-{{- if and .Values.controller.ingress.ingressClassName (not (semverCompare ">=1.18-0" $kubeVersion)) }}
-  {{- if not (hasKey .Values.controller.ingress.annotations "kubernetes.io/ingress.class") }}
-  {{- $_ := set .Values.controller.ingress.annotations "kubernetes.io/ingress.class" .Values.controller.ingress.ingressClassName }}
+{{- $fullname := include "common.names.fullname" . -}}
+{{- $svcHttpPort := .Values.service.httpPort.port -}}
+{{- if and .Values.ingress.ingressClassName (not (semverCompare ">=1.18-0" $kubeVersion)) }}
+  {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
+  {{- $_ := set .Values.ingress.annotations "kubernetes.io/ingress.class" .Values.ingress.ingressClassName }}
   {{- end }}
-{{- else if and (hasKey .Values.controller.ingress.annotations "kubernetes.io/ingress.class") (semverCompare ">=1.18-0" $kubeVersion) }}
-{{- $_ := unset .Values.controller.ingress.annotations "kubernetes.io/ingress.class" }}
+{{- else if and (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") (semverCompare ">=1.18-0" $kubeVersion) }}
+{{- $_ := unset .Values.ingress.annotations "kubernetes.io/ingress.class" }}
 {{- end }}
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullname }}
   labels:
-    {{- include "common.labels" . | nindent 4 -}}
+    {{- include "common.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
   {{- end }}
 spec:
-  {{- if and .Values.controller.ingress.ingressClassName (semverCompare ">=1.18-0" $kubeVersion) }}
-  ingressClassName: {{ default "nginx" .Values.controller.ingress.ingressClassName }}
+  {{- if and .Values.ingress.ingressClassName (semverCompare ">=1.18-0" $kubeVersion) }}
+  ingressClassName: {{ .Values.ingress.ingressClassName }}
   {{- end }}
-  rules:
-    {{- range $host := .Values.controller.ingress.hosts }}
-    - host: {{ $host }}
-      http:
-        paths:
-          - path: /
-            backend:
-              serviceName: {{ $serviceName }}
-              servicePort: {{ $servicePort }}
-    {{- end -}}
   {{- if .Values.ingress.tls }}
   tls:
-    {{- toYaml .Values.ingress.tls | nindent 4 -}}
-  {{- end -}}
-{{- end -}}
+    {{- if and .Values.ingress.tls (and .Values.ingress.tls.key .Values.ingress.tls.crt) }}
+    {{- if .Values.ingress.host }}
+    - hosts: 
+        - {{ .Values.ingress.host }}
+      secretName: {{ include "common.names.fullname" . }}-tls
+    {{- end }}
+    {{- end }}
+    {{- with .Values.ingress.extraTls }}
+    {{- toYaml . | nindent 4 -}}
+    {{- end }}
+  {{- end }}
+  rules:
+    {{- if .Values.ingress.host }}
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          {{- if $svcHttpPort }}
+          - path: /
+            backend:
+              {{- if semverCompare ">=1.19-0" $kubeVersion }}
+              service:
+                name: {{ $fullname }}
+                port:
+                  number: {{ $svcHttpPort }}
+              {{- else }}
+              serviceName: {{ $fullname }}
+              servicePort: {{ $svcHttpPort }}
+              {{- end }}
+            {{- if semverCompare ">=1.18-0" $kubeVersion }}
+            pathType: Prefix
+            {{- end }}
+          {{- end }}
+    {{- end }}
+    {{- if .Values.ingress.extraRules }}
+    {{- toYaml .Values.ingress.extraRules | nindent 4 }}
+    {{- end }}
+{{- end }}

@@ -104,7 +104,7 @@ spec:
           {{- end }}
           env:
             {{- if .Values.extraEnvVars }}
-              {{- toYaml .Values.extraEnvVars | nindent 12 }}
+            {{- toYaml .Values.extraEnvVars | nindent 12 }}
             {{- end }}
           volumeMounts:
             - name: nexus3-data

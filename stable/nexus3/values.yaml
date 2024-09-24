@@ -100,7 +100,6 @@ podSecurityContext:
 
 # The security context for the Sonatype Nexus Repository containers.
 securityContext:
-  # Remove curly brackets before adding values
   capabilities:
     drop:
       - ALL
