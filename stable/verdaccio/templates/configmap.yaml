@@ -9,4 +9,8 @@ metadata:
     {{- include "common.labels" . | nindent 4 }}
 data:
   config.yaml: |-
+    {{- if .Values.config }}
     {{- include "common.tplvalues.render" (dict "value" .Values.config "context" $) | nindent 4 }}
+    {{- else }}
+    {{- tpl (.Files.Get "files/conf.yaml") . | nindent 4 }}
+    {{- end }}
