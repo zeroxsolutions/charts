@@ -75,7 +75,7 @@ spec:
           securityContext:
             runAsUser: 0
           volumeMounts:
-            - name: nexus3-data
+            - name: verdaccio
               mountPath: {{ .Values.persistence.mountPath }}
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
@@ -107,15 +107,31 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           {{- end }}
           env:
+            {{- if .Values.securityContext }}
+            - name: VERDACCIO_USER_UID
+              value: {{ .Values.securityContext.runAsUser | quote }}
+            {{- end }}
+            - name: VERDACCIO_PORT
+              value: {{ default 4873 .Values.containerPorts.http | quote }}
             {{- if .Values.extraEnvVars }}
             {{- toYaml .Values.extraEnvVars | nindent 12 }}
             {{- end }}
           volumeMounts:
-            - name: nexus3-data
-              mountPath: {{ .Values.persistence.mountPath }}
+            - name: verdaccio
+              mountPath: {{ default "/verdaccio" .Values.persistence.mountPath }}
               {{- if .Values.persistence.subPath }}
               subPath: {{ .Values.persistence.subPath }}
               {{- end }}
+              readOnly: false
+            - name: config
+              mountPath: /verdaccio/conf
+              readOnly: true
+            {{- if .Values.htpasswd }}
+            - name: htpasswd
+              mountPath: /verdaccio/storage/htpasswd
+              subPath: htpasswd
+              readOnly: true
+            {{- end }}
             {{- if .Values.persistence.extraVolumeMounts }}
             {{- toYaml .Values.persistence.extraVolumeMounts | nindent 12 }}
             {{- end }}
@@ -123,17 +139,21 @@ spec:
         {{- toYaml .Values.extraContainers | nindent 8 }}
         {{- end }}
       volumes:
-        - name: nexus3-data
+        - name: verdaccio
           {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            {{- if .Values.persistence.existingClaim }}
-            claimName: {{ .Values.persistence.existingClaim }}
-            {{- else }}
-            claimName: {{ include "common.names.fullname" . }}
-            {{- end }}
+            claimName: {{ default (include "common.names.fullname" .) .Values.persistence.existingClaim }}
           {{- else }}
           emptyDir: {}
           {{- end }}
+        - name: config
+          configMap:
+            name: {{ .Values.existingConfig | default (include "common.names.fullname" .) }}
+        {{- if .Values.htpasswd }}
+        - name: htpasswd
+          secret:
+            secretName: {{ include "common.names.fullname" . }}-htpasswd
+        {{- end }}
         {{- if .Values.persistence.extraVolumes }}
         {{- toYaml .Values.persistence.extraVolumes | nindent 8 }}
         {{- end }}

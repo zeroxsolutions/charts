@@ -1,0 +1,449 @@
+# Copyright ZeroX.
+
+# Global define (Required)
+global:
+  # Kube version
+  kubeVersion: ""
+
+  # Common labels
+  commonLabels: {}
+
+  # Common annotations
+  commonAnnotations: {}
+
+  # Cluster domain
+  clusterDomain: cluster.local
+
+# Full name override
+fullnameOverride: verdaccio
+
+# Name override
+nameOverride: verdaccio
+
+# Namespace override
+namespaceOverride:
+
+image:
+  # The image registry of the Verdaccio.
+  registry:
+
+  # The image repository of the Verdaccio.
+  repository: verdaccio/verdaccio
+
+  # The tag of the Verdaccio image. If not specified the appVersion from Chart.yaml is used as a tag.
+  # tag: "6.x-next"
+  # The digest of the Verdaccio image.
+  # If digest is specified it has precedence over tag and will be used instead
+  # digest: "sha256:CHANGEME"
+
+  # The pull policy for the Verdaccio image.
+  pullPolicy: IfNotPresent
+
+# Annotations for deployment
+annotations: {}
+
+selectLabels: {}
+
+pod:
+  # The annotations of the Verdaccio pod.
+  annotations: {}
+
+  # The additional extra labels of the Verdaccio pod.
+  extraLabels: {}
+
+hostPorts:
+  # Enables hostPort for the Verdaccio pods.
+  enabled: false
+
+  # The HTTP hostPort configuration for the Verdaccio pods.
+  http: 80
+
+containerPorts:
+  # The HTTP containerPort configuration for the Verdaccio pods.
+  http: 4873
+
+# DNS policy for the Verdaccio pods
+dnsPolicy: ClusterFirst
+
+# Share process namespace between containers in the Verdaccio pod.
+shareProcessNamespace: false
+
+# A list of extra ports to expose on the Verdaccio pod. Follows the conventional Kubernetes yaml syntax for container ports.
+extraPorts: []
+
+# The lifecycle of the Verdaccio pods.
+lifecycle: {}
+
+# The node selector for pod assignment for the Verdaccio pods.
+# nodeSelector: {}
+
+# The termination grace period of the Verdaccio pod.
+terminationGracePeriodSeconds: 30
+
+# Enables the Verdaccio pods to use the host's network namespace.
+hostNetwork: false
+
+# The resources of the Verdaccio pods.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+# limits:
+#   cpu: 1
+#   memory: 1Gi
+
+# The security context for the Verdaccio pods.
+podSecurityContext:
+  fsGroup: 101
+  # seccompProfile:
+  #   type: RuntimeDefault
+
+# The security context for the Verdaccio containers.
+securityContext:
+  # capabilities:
+  #   drop:
+  #     - ALL
+  # add:
+  #   - NET_BIND_SERVICE
+  # allowPrivilegeEscalation: true
+  # readOnlyRootFilesystem: false
+  # runAsNonRoot: true
+  runAsUser: 10001
+
+# The tolerations of the Verdaccio pods.
+tolerations: []
+
+# The affinity of the Verdaccio pods.
+affinity: {}
+
+# The topology spread constraints of the Verdaccio pods.
+# topologySpreadConstraints: {}
+
+# The PriorityClass of the Verdaccio pods.
+# priorityClassName: ""
+
+# Strategy used to replace old Pods by new ones. .spec.strategy.type can be "Recreate" or "RollingUpdate" for Deployments, and "OnDelete" or "RollingUpdate" for Daemonsets. "RollingUpdate" is the default value.
+strategy: {}
+
+# The minimum number of seconds for which a newly created Pod should be ready without any of its containers crashing, for it to be considered available.
+minReadySeconds: 0
+
+# The additional environment variables to be set on the Verdaccio pods.
+extraEnvVars: []
+# - name: MY_VAR
+#   value: myvalue
+
+# The number of replicas of the Verdaccio deployment.
+replicaCount: 1
+
+# Extra containers for the Verdaccio pods.
+extraContainers: []
+# - name: container
+#   image: busybox:1.34
+#   command: ['sh', '-c', 'echo this is a sidecar!']
+
+# Pod disruption budget for the Verdaccio pods.
+podDisruptionBudget:
+  # Enables PodDisruptionBudget.
+  enabled: false
+  # The annotations of the Verdaccio pod disruption budget.
+  annotations: {}
+  # The number of Verdaccio pods that should be available. This is a mutually exclusive setting with "maxUnavailable".
+  # minAvailable: 1
+  # The number of Verdaccio pods that can be unavailable. This is a mutually exclusive setting with "minAvailable".
+  # maxUnavailable: 1
+
+# Extra volume mounts
+extraVolumeMounts: []
+
+# Extra volumes
+extraVolumes: []
+
+# Extra args
+extraArgs: []
+
+# Verdaccio config htpasswd
+# htpasswd:
+#   - username: ...
+#     password: ...
+htpasswd: []
+
+# Existing verdaccio config
+existingConfig: ""
+
+# Verdaccio config
+config: |
+  # This is the config file used for the docker images
+  # It allows all users to do anything, so don't use it on production systems.
+  #
+  # Do not configure host and port under `listen` in this file
+  # as it will be ignored when using docker.
+  # see https://github.com/verdaccio/verdaccio/blob/master/docs/docker.md#docker-and-custom-port-configuration
+  #
+  # Look here for more config file examples:
+  # https://github.com/verdaccio/verdaccio/tree/master/conf
+  #
+
+  # path to a directory with all packages
+  storage: /verdaccio/storage/data
+
+  web:
+    # WebUI is enabled as default, if you want disable it, just uncomment this line
+    #enable: false
+    title: Verdaccio
+
+  auth:
+    htpasswd:
+      # Do not change this path if secrets htpasswd is used.
+      file: /verdaccio/storage/htpasswd
+      # Maximum amount of users allowed to register, defaults to "+infinity".
+      # You can set this to -1 to disable registration.
+      # max_users: 1000
+      # Hash algorithm, possible options are: "bcrypt", "md5", "sha1", "crypt".
+      algorithm: bcrypt # by default is crypt, but is recommended use bcrypt for new installations
+      # Rounds number for "bcrypt", will be ignored for other algorithms.
+      # rounds: 10
+
+  # a list of other known repositories we can talk to
+  uplinks:
+    npmjs:
+      url: https://registry.npmjs.org/
+      agent_options:
+        keepAlive: true
+        maxSockets: 40
+        maxFreeSockets: 10
+
+  packages:
+    '@*/*':
+      # scoped packages
+      access: $all
+      publish: $authenticated
+      proxy: npmjs
+
+    '**':
+      # allow all users (including non-authenticated users) to read and
+      # publish all packages
+      #
+      # you can specify usernames/groupnames (depending on your auth plugin)
+      # and three keywords: "$all", "$anonymous", "$authenticated"
+      access: $all
+
+      # allow all known users to publish packages
+      # (anyone can register by default, remember?)
+      publish: $authenticated
+
+      # if package is not available locally, proxy requests to 'npmjs' registry
+      proxy: npmjs
+
+  # To use `npm audit` uncomment the following section
+  middlewares:
+    audit:
+      enabled: true
+
+  # log settings
+  log: {type: stdout, format: pretty, level: http}
+  # log: {type: file, path: verdaccio.log, level: info}
+
+service:
+  # Creates a service to expose the Verdaccio pods.
+  create: true
+
+  # The type of service to create for the Verdaccio.
+  type: LoadBalancer
+
+  # The externalTrafficPolicy of the service. The value Local preserves the client source IP.
+  externalTrafficPolicy: Local
+
+  # The annotations of the Verdaccio service.
+  annotations: {}
+
+  # The extra labels of the service.
+  extraLabels: {}
+
+  # The static IP address for the load balancer. Requires service.type set to LoadBalancer. The cloud provider must support this feature.
+  loadBalancerIP: ""
+
+  # The ClusterIP for the Verdaccio service, autoassigned if not specified.
+  clusterIP: ""
+
+  # The list of external IPs for the Verdaccio service.
+  externalIPs: []
+
+  # The IP ranges (CIDR) that are allowed to access the load balancer. Requires service.type set to LoadBalancer. The cloud provider must support this feature.
+  loadBalancerSourceRanges:
+
+  # Whether to automatically allocate NodePorts (only for LoadBalancers).
+  # allocateLoadBalancerNodePorts: false
+
+  # Dual stack preference.
+  # Valid values: SingleStack, PreferDualStack, RequireDualStack
+  # ipFamilyPolicy: SingleStack
+
+  # List of IP families assigned to this service.
+  # Valid values: IPv4, IPv6
+  # ipFamilies:
+  #   - IPv6
+
+  # Ports
+  httpPort:
+    #
+    enabled: true
+
+    # The HTTP port of the Verdaccio service.
+    port: 4873
+
+    # The HTTP port on the POD where the Verdaccio service is running.
+    targetPort: 4873
+
+    # The custom NodePort for the HTTP port. Requires service.type set to NodePort or LoadBalancer.
+    # nodePort:
+
+  # A list of extra ports to expose through the Verdaccio service. Follows the conventional Kubernetes yaml syntax for service ports.
+  extraPorts: []
+
+# Ingress configuration
+ingress:
+  # Enable ingress
+  enabled: false
+
+  # Annotations
+  annotations:
+    {}
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+
+  # Ingress class name
+  ingressClassName: ""
+
+  # Host configuration
+  host: ""
+
+  # TLS configuration
+  tls: {}
+
+  # Extra rules configuration
+  extraRules: []
+  # Extra TLSs configuration
+  # - host: chart.example
+  #   paths:
+  #     pathType: ImplementationSpecific
+  #     path: /
+
+  extraTls: []
+  # - secretName: chart-example-tls
+  #   hosts:
+  #     - chart-example.local
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+
+  # The annotations of the service account of the Verdaccio pods.
+  annotations: {}
+
+  # The name of the service account of the Verdaccio pods. Used for RBAC.
+  # Autogenerated if not set or set to "".
+  # name: nexus3
+
+  # The name of the secret containing docker registry credentials.
+  # Secret must exist in the same namespace as the helm release.
+  imagePullSecretName: ""
+
+  # A list of secret names containing docker registry credentials.
+  # Secrets must exist in the same namespace as the helm release.
+  imagePullSecretsNames: []
+
+  # If you don't want the kubelet to automatically mount a ServiceAccount's API credentials,
+  # you can opt out of the default behavior.
+  # You can opt out of automounting API credentials on
+  # /var/run/secrets/kubernetes.io/serviceaccount/token for a service account by setting automountServiceAccountToken: false on the ServiceAccount:
+  automountServiceAccountToken: true
+
+# HorizontalPodAutoscaling (HPA)
+autoscaling:
+  # Enables HorizontalPodAutoscaling.
+  enabled: false
+
+  # The annotations of the Ingress Controller HorizontalPodAutoscaler.
+  annotations: {}
+
+  # Minimum number of replicas for the HPA.
+  minReplicas: 1
+
+  # Maximum number of replicas for the HPA.
+  maxReplicas: 3
+
+  # The target cpu utilization percentage.
+  targetCPUUtilizationPercentage: 50
+
+  # The target memory utilization percentage.
+  targetMemoryUtilizationPercentage: 50
+
+  # Custom behavior policies
+  behavior: {}
+
+# Enable persistence using Persistent Volume Claims
+# ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/
+persistence:
+  # Enable persistence using PVC
+  enabled: true
+
+  # Annotations are only applied to persistentVolumeClaim
+  # annotations:
+  #  "helm.sh/resource-policy": keep
+
+  mountPath: "/verdaccio"
+
+  subPath: ""
+
+  volumeName: ""
+
+  # If defined, storageClassName: <storageClass>
+  # If set to "-", storageClassName: "", which disables dynamic provisioning
+  # If undefined (the default) or set to null, no storageClassName spec is
+  #   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  #   GKE, AWS & OpenStack)
+  #
+  storageClass: "hostpath"
+
+  # Claims use the same conventions as volumes when requesting storage with specific access modes.
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#access-modes
+  accessModes:
+    - ReadWriteOnce
+
+  existingClaim: ""
+
+  size: 4Gi
+
+  # Kubernetes supports two volumeModes of PersistentVolumes: Filesystem and Block.
+
+  # volumeMode is an optional API parameter. Filesystem is the default mode used when volumeMode parameter is omitted.
+
+  # A volume with volumeMode: Filesystem is mounted into Pods into a directory.
+  # If the volume is backed by a block device and the device is empty,
+  # Kubernetes creates a filesystem on the device before mounting it for the first time.
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#volume-mode
+  volumeMode: ""
+
+  # Claims can specify a label selector to further filter the set of volumes.
+  # Only the volumes whose labels match the selector can be bound to the claim.
+  # The selector can consist of two fields:
+  # ref: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#selector
+  # matchLabels:
+  #     release: "stable"
+  selector: {}
+
+  # This is useful if you want to consume PersistentVolumes that have their persistentVolumeReclaimPolicy set to Retain,
+  # including cases where you are reusing an existing PV. (Retain,Recycle,...)
+  persistentVolumeReclaimPolicy: ""
+
+  # A hostPath volume mounts a file or directory from the host node's filesystem into your Pod.
+  # This is not something that most Pods will need, but it offers a powerful escape hatch for some applications.
+  # ref: https://kubernetes.io/docs/concepts/storage/volumes/#hostpath
+  hostPath:
+    path: "/tmp/verdaccio"
+    type: DirectoryOrCreate
+
+## initContainers Add additional init containers to the pod (evaluated as a template)
+##
+initContainers: []
