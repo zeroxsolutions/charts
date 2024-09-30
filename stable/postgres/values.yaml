@@ -1,104 +1,45 @@
 # Copyright ZeroX.
 
-# Global define (Require)
+# Global define (Required)
 global:
-  # Full name override
-  fullname: "postgres"
-  # Name override
-  name: "postgres"
   # Kube version
   kubeVersion: ""
 
-# Controller
-controller:
-  # Registry (Docker Hub) image default docker.io
-  registry: "docker.io"
-  # Image name
-  image: "postgres"
-  # Version image default Chart app version
-  version: "13.12"
-  # Pull policy default IfNotPresent
-  pullPolicy: "IfNotPresent"
-  # Replicas setting default 1
-  replicaCount: 1
-  # Pod annotations
-  podAnnotations: {}
-  # Pod labels
-  podLabels: {}
-  # Host network
-  hostNetwork: false
-  # Image pull secrets
-  imagePullSecrets: []
-  # Postgres port
-  port: 5432
-  # Extra environment variables
-  # - name: ""
-  #   value: ""
-  # - name:
-  #   valueFrom:
-  #     configMapKeyRef(secretKeyRef):
-  #       name:  ""
-  #       key: ""
-  extraEnvs: []
-  # Security context
-  securityContext: {}
-    # capabilities:
-    #   drop:
-    #   - ALL
-    # readOnlyRootFilesystem: true
-    # runAsNonRoot: true
-    # runAsUser: 1000
-  resources: {}
-    # We usually recommend not to specify default resources and to leave this as a conscious
-    # choice for the user. This also increases chances charts run on environments with little
-    # resources, such as Minikube. If you do want to specify resources, uncomment the following
-    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-    # limits:
-    #   cpu: 100m
-    #   memory: 128Mi
-    # requests:
-    #   cpu: 100m
-    #   memory: 128Mi
-  # Primary database configuration
-  primary:
-    # Username database
-    username: ""
-    # Primary password database 
-    password: ""
-    # Postgres database name
-    db: ""
+  # Common labels
+  commonLabels: {}
 
-  # Service of controller configuration  
-  service:
-    # Service type ClusterIP, LoadBalancer, NodePort default (LoadBalancer)
-    type: ""
-    # PostgreSQL port
-    port: 5432
-    # ClusterIP with service type ClusterIP
-    clusterIP: ""
-    # Node port configuration
-    nodePort: 35432
-    # Load balancer IP
-    loadBalancerIP: ""
-    # Extra labels
-    extraLabels: {}
+  # Common annotations
+  commonAnnotations: {}
 
-  # Service account configuration
-  serviceAccount:
-    # Create new service account
-    create: true
-    # Service account name
-    name: ""
-    # Service account annotations
-    # Key: Value
-    annotations: {}
+  # Cluster domain
+  clusterDomain: cluster.local
 
-# Configuration HA Proxy
-haproxy: 
-  # Enabled HA Proxy
-  enabled: false
+# Full name override
+fullnameOverride: postgres
 
-# Readonly configuration
-readonly:
-  # Enabled readonly
-  enabled: false
+# Name override
+nameOverride: postgres
+
+# Namespace override
+namespaceOverride:
+
+image:
+  # The image registry of the PostgreSQL.
+  registry:
+
+  # The image repository of the PostgreSQL.
+  repository: postgres
+
+  # The tag of the PostgreSQL image. If not specified the appVersion from Chart.yaml is used as a tag.
+  # tag: "14.13"
+  # The digest of the PostgreSQL image.
+  # If digest is specified it has precedence over tag and will be used instead
+  # digest: "sha256:CHANGEME"
+
+  # The pull policy for the PostgreSQL image.
+  pullPolicy: IfNotPresent
+
+# Annotations for deployment
+annotations: {}
+
+selectLabels: {}

@@ -1,10 +1,11 @@
 # Copyright ZeroX.
 apiVersion: v2
 name: postgres
-description: PostgreSQL
+description: PostgreSQL is a powerful, open source object-relational database system with over 35 years of active development that has earned it a strong reputation for reliability, feature robustness, and performance.
+icon: file://./icon.png
 type: application
 version: 0.0.1
-appVersion: "13.12"
+appVersion: "14.13"
 home: https://zeroxsolutions.com
 keywords:
   - "postgres"
