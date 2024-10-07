@@ -39,7 +39,14 @@ image:
   # The pull policy for the PostgreSQL image.
   pullPolicy: IfNotPresent
 
-# Annotations for deployment
-annotations: {}
+primary:
+  # Annotations for StatefulSet
+  annotations: {}
 
-selectLabels: {}
+  selectLabels: {}
+
+  # Service
+  service:
+    enabled: true
+
+readReplicas:
