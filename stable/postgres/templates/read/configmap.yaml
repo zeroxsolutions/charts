@@ -1,3 +1,10 @@
 {{/*
 Copyright ZeroX.
 */}}
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "postgres.primary.v1.fullname" . }}
+  namespace: {{ include "common.names.namespace" . }}
+data:
+  
