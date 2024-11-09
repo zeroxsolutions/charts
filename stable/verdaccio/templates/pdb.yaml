@@ -1,6 +1,3 @@
-{{/*
-Copyright ZeroX.
-*/}}
 ---
 {{- if .Values.podDisruptionBudget.enabled -}}
 apiVersion: {{ include "common.capabilities.podDisruptionBudget.apiVersion" . }}

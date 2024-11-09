@@ -1,6 +1,3 @@
-{{/*
-Copyright ZeroX.
-*/}}
 
 {{/*
 Common labels

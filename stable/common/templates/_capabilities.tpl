@@ -1,6 +1,3 @@
-{{/*
-Copyright ZeroX.
-*/}}
 
 {{/*
 Return the target Kubernetes version

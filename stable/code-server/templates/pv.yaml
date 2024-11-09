@@ -1,6 +1,3 @@
-{{/*
-Copyright ZeroX.
-*/}}
 ---
 {{- if and .Values.persistence.enabled (not .Values.persistence.existingClaim) }}
 apiVersion: {{ include "common.capabilities.persistentVolume.apiVersion" . }}

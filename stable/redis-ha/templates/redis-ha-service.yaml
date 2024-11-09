@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 
 {{- if and .Values.redis-ha.enabled .Values.redis-ha.service.create -}}
 apiVersion: {{ include "common.capabilities.service.apiVersion" . }}

@@ -1,6 +1,3 @@
-{{/*
-Copyright ZeroX.
-*/}}
 kind: ConfigMap
 apiVersion: {{ include "common.capabilities.configMap.apiVersion" . }}
 metadata:

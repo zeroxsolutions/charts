@@ -1,6 +1,3 @@
-{{/*
-Copyright ZeroX.
-*/}}
 
 {{/*
 Renders a value that contains template perhaps with scope if the scope is present.

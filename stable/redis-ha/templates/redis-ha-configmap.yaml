@@ -1,7 +1,4 @@
 ---
-{{/*
-Copyright ZeroX.
-*/}}
 {{- if .Values.redis-ha.enabled }}
 kind: ConfigMap
 apiVersion: v1

@@ -1,6 +1,3 @@
-{{/*
-Copyright ZeroX.
-*/}}
 ---
 {{- if .Values.ingress.enabled -}}
 {{- $kubeVersion := include "common.capabilities.kubeVersion" . -}}

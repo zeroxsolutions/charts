@@ -1,9 +1,6 @@
-{{/*
-Copyright ZeroX.
-*/}}
 {{- if .Values.ingress.enabled -}}
 {{- $kubeVersion := include "common.capabilities.kubeVersion" . -}}
-{{- $fullName := include "common.names.fullname" . -}}
+{{- $fullname := include "common.names.fullname" . -}}
 {{- $svcHttpPort := .Values.controller.service.httpPort -}}
 {{- if and .Values.ingress.ingressClassName (not (semverCompare ">=1.18-0" $kubeVersion)) }}
   {{- if not (hasKey .Values.ingress.annotations "kubernetes.io/ingress.class") }}
@@ -15,7 +12,7 @@ Copyright ZeroX.
 apiVersion: {{ include "common.capabilities.ingress.apiVersion" . }}
 kind: Ingress
 metadata:
-  name: {{ $fullName }}
+  name: {{ $fullname }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
@@ -47,11 +44,11 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $kubeVersion }}
               service:
-                name: {{ $fullName }}
+                name: {{ $fullname }}
                 port:
                   number: {{ $svcHttpPort }}
               {{- else }}
-              serviceName: {{ $fullName }}
+              serviceName: {{ $fullname }}
               servicePort: {{ $svcHttpPort }}
               {{- end }}
             {{- if semverCompare ">=1.18-0" $kubeVersion }}
@@ -69,11 +66,11 @@ spec:
             backend:
               {{- if semverCompare ">=1.19-0" $kubeVersion }}
               service:
-                name: {{ $fullName }}
+                name: {{ $fullname }}
                 port:
                   number: {{ $svcHttpPort }}
               {{- else }}
-              serviceName: {{ $fullName }}
+              serviceName: {{ $fullname }}
               servicePort: {{ $svcHttpPort }}
               {{- end }}
             {{- if semverCompare ">=1.18-0" $kubeVersion }}

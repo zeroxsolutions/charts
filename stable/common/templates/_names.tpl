@@ -1,6 +1,3 @@
-{{/*
-Copyright ZeroX.
-*/}}
 
 {{/*
 Expand the name of the chart.
