@@ -1,4 +1,3 @@
-# Copyright ZeroX.
 
 # Global define (Required)
 global:
@@ -50,3 +49,13 @@ primary:
     enabled: true
 
 readReplicas:
+
+
+
+backup:
+  
+  enabled: true
+
+  cronjob:
+
+    networkPolicy:

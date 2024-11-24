@@ -1,4 +1,3 @@
-# Copyright ZeroX.
 apiVersion: v2
 name: gitlab-ce
 description: GitLab Community Edition (CE) is an open source end-to-end software development platform with built-in version control, issue tracking, code review, CI/CD, and more.
