@@ -1,0 +1,20 @@
+apiVersion: v2
+name: cf-tunnel
+description: A Helm chart for Kubernetes
+icon: file://./icon.png
+type: application
+version: 0.0.1
+appVersion: "2025.4.2"
+home: https://zeroxsolutions.com
+keywords:
+  - "cf-tunnel"
+  - "helm"
+annotations:
+  category: "infrastructure"
+maintainers:
+  - name: ZeroX.
+    url: https://github.com/zeroxsolutions/charts
+dependencies:
+  - name: common
+    version: 0.0.1
+    repository: file://../common
