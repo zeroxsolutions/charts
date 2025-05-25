@@ -3,7 +3,7 @@
 apiVersion: {{ include "common.capabilities.autoscaling.apiVersion" . }}
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "common.fullname" . }}
+  name: {{ include "common.names.fullname" . }}
   namespace: {{ include "common.names.namespace" . }}
   labels:
     {{- include "common.labels" . | nindent 4 }}
@@ -15,7 +15,7 @@ spec:
   scaleTargetRef:
     apiVersion: {{ include "common.capabilities.deployment.apiVersion" . }}
     kind: Deployment
-    name: {{ include "common.fullname" . }}
+    name: {{ include "common.names.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   {{- if .Values.autoscaling.behavior }}
