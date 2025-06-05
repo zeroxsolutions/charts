@@ -61,7 +61,7 @@ spec:
         {{- toYaml .Values.initContainers | nindent 8 }}
         {{- end }}
       containers:
-        - image: {{ include "common.images.image" . }}
+        - image: {{- include "common.images.image.render" (dict "image" .Values.image "context" $) -}}
           name: {{ include "common.names.name" . }}
           imagePullPolicy: "{{ .Values.image.pullPolicy }}"
           command:
@@ -75,7 +75,7 @@ spec:
             - run
           args:
             - --token
-            - {{ printf "%s" .Values.cloudflared.token | quote }}
+            - {{ printf "%s" .Values.cloudflared.token | required "require cloudflared token" | quote }}
             {{- if .Values.extraArgs }}
             {{- toYaml .Values.extraArgs | nindent 12 }}
             {{- end }}

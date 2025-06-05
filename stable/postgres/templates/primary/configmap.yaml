@@ -1,9 +1,0 @@
-kind: ConfigMap
-apiVersion: {{ include "common.capabilities.configMap.apiVersion" . }}
-metadata:
-  name: {{ include "common.names.fullname" . }}
-  namespace: {{ .Release.Namespace }}
-data:
-  POSTGRES_DB: {{ default "postgres" .Values.controller.primary.db }}
-  POSTGRES_USER: {{ default "root" .Values.controller.primary.username }}
-  

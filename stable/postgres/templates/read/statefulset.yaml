@@ -1,4 +1,0 @@
-apiVersion: {{ include "common.capabilities.statefulSet.apiVersion" . }}
-kind: StatefulSet
-metadata:
-  name: {{ include "postgres.read.v1.fullname" . }}

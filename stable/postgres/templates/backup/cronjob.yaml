@@ -1,6 +1,0 @@
----
-{{- if .Values.backup.enabled }}
-
-
-
-{{- end }}
