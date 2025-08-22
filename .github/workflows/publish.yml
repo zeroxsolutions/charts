@@ -21,7 +21,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0   # required to diff against previous tags
+          fetch-depth: 0   # required for diffing with previous tags
 
       - name: Setup Helm
         uses: azure/setup-helm@v4
@@ -40,11 +40,11 @@ jobs:
         run: |
           set -euo pipefail
 
-          # find previous tag (if any)
+          # previous tag (if any)
           PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)
           echo "prev_tag=${PREV_TAG}" >> "$GITHUB_OUTPUT"
 
-          # list candidate chart dirs
+          # candidate chart dirs
           CANDIDATES=()
           while IFS= read -r -d '' d; do
             CANDIDATES+=("$d")
@@ -54,7 +54,7 @@ jobs:
           for CHDIR in "${CANDIDATES[@]}"; do
             [ -f "$CHDIR/Chart.yaml" ] || continue
             if [ -n "$PREV_TAG" ]; then
-              # changed between PREV_TAG..HEAD?
+              # only mark as changed if diff exists between PREV_TAG..HEAD
               if git diff --quiet "$PREV_TAG"..HEAD -- "$CHDIR"; then
                 continue
               fi
@@ -64,13 +64,12 @@ jobs:
 
           echo "list=${CHANGED}" >> "$GITHUB_OUTPUT"
 
-      - name: Fail if no charts changed
+      - name: No charts changed — skip publish
         if: steps.changed.outputs.list == ''
-        run: |
-          echo "No chart changes detected since previous tag. Skipping publish."
-          exit 0
+        run: echo "No chart changes since previous tag."
 
       - name: Lint, package and push changed charts
+        if: steps.changed.outputs.list != ''
         shell: bash
         run: |
           set -euo pipefail
@@ -83,8 +82,8 @@ jobs:
 
             echo "::group::${NAME} (${TYPE:-application}) v${VERSION}"
 
-            # if you don't vendor dependencies, uncomment:
-            # helm dependency update "$CHDIR"
+            # build dependencies first (supports file:// and oci:// repos)
+            helm dependency build "$CHDIR" || helm dependency update "$CHDIR"
 
             helm lint "$CHDIR"
             helm package "$CHDIR" --destination dist
@@ -93,6 +92,7 @@ jobs:
           done
 
       - name: Create / Update GitHub Release with chart artifacts
+        if: steps.changed.outputs.list != ''
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
