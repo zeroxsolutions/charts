@@ -32,7 +32,8 @@ jobs:
         uses: mikefarah/yq@v4.44.3
 
       - name: Login GHCR (Helm OCI)
-        run: helm registry login ghcr.io -u ${{ github.actor }} -p ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo ${{ secrets.GITHUB_TOKEN }} | helm registry login ghcr.io -u ${{ github.actor }} --password-stdin
 
       - name: Detect changed charts since previous tag
         id: changed
@@ -87,7 +88,7 @@ jobs:
 
             helm lint "$CHDIR"
             helm package "$CHDIR" --destination dist
-            helm push "dist/${NAME}-${VERSION}.tgz" "oci://${REGISTRY}/${OWNER}/${REPO}/${NAME}"
+            helm push "dist/${NAME}-${VERSION}.tgz" "oci://${REGISTRY}/${OWNER}/${REPO}"
             echo "::endgroup::"
           done
 

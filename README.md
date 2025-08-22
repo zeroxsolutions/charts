@@ -37,7 +37,7 @@ This chart is published to GitHub Container Registry (GHCR). You have two option
 helm registry login ghcr.io
 
 # Install directly from GHCR
-helm install my-tunnel oci://ghcr.io/zeroxsolutions/charts/cf-tunnel
+helm install my-tunnel oci://ghcr.io/zeroxsolutions/charts
 ```
 
 #### Option 2: Add as Helm Repository
