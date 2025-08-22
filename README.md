@@ -1,290 +1,145 @@
-# Cloudflare Tunnel Helm Chart
+# ZeroX Solutions Helm Charts
 
 [![Release](https://img.shields.io/github/v/release/zeroxsolutions/charts?label=Release&sort=semver)](https://github.com/zeroxsolutions/charts/releases)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
-[![Helm Chart](https://img.shields.io/badge/Helm%20Chart-cf--tunnel-blue.svg)](https://helm.sh/)
+[![Helm Charts](https://img.shields.io/badge/Helm%20Charts-Multiple-blue.svg)](https://helm.sh/)
 
-A Helm chart for deploying Cloudflare Tunnel (cloudflared) to Kubernetes clusters. This chart provides a simple and configurable way to run Cloudflare Tunnels in your Kubernetes environment.
+A collection of Helm charts for Kubernetes, maintained by ZeroX Solutions. This repository contains various charts for different applications and services.
 
-## What is Cloudflare Tunnel?
+## Available Charts
 
-Cloudflare Tunnel creates a secure, outbound-only connection from your origin server to Cloudflare's edge network. Unlike traditional VPNs or firewall rules, Cloudflare Tunnel doesn't require you to open any inbound ports on your origin server.
+This repository contains the following Helm charts:
+
+### cf-tunnel
+A Helm chart for deploying Cloudflare Tunnel (cloudflared) to Kubernetes clusters. Cloudflare Tunnel creates a secure, outbound-only connection from your origin server to Cloudflare's edge network. Unlike traditional VPNs or firewall rules, Cloudflare Tunnel doesn't require you to open any inbound ports on your origin server.
+
+### common
+Common library Helm charts that provide shared functionality and templates for other charts.
 
 ## Features
 
-- 🚀 **Easy Deployment**: Simple Helm chart deployment with customizable values
-- 🔒 **Secure**: Runs with appropriate security contexts and RBAC
-- 📊 **Monitoring Ready**: Built-in health checks and readiness probes
-- 🔧 **Highly Configurable**: Extensive configuration options for various use cases
+- 🚀 **Easy Deployment**: Simple Helm chart deployment for various applications
+- 🔒 **Secure**: Production-ready security contexts and RBAC configurations
+- 📊 **Monitoring Ready**: Built-in health checks and metrics
+- 🔧 **Highly Configurable**: Extensive configuration options for different use cases
 - 📈 **Scalable**: Support for horizontal pod autoscaling
 - 🏗️ **Production Ready**: Includes resource limits, security policies, and best practices
+- 📚 **Library Support**: Common templates and functions for consistency
 
 ## Prerequisites
 
 - Kubernetes 1.19+
 - Helm 3.0+
-- A Cloudflare account with Tunnel configured
+- Internet access to pull container images
 
 ## Quick Start
 
-### Install from GitHub Container Registry (GHCR)
+### Add the Repository
 
-This chart is published to GitHub Container Registry (GHCR). You have two options to install:
+All charts are published to a Helm repository hosted on GitHub Pages:
 
-#### Option 1: Direct OCI Install (Recommended)
-```bash
-# Login to GHCR (only needed once)
-helm registry login ghcr.io
-
-# Install directly from GHCR
-helm install my-tunnel oci://ghcr.io/zeroxsolutions/charts
-```
-
-#### Option 2: Add as Helm Repository
 ```bash
 # Add the repository
 helm repo add zeroxsolutions https://zeroxsolutions.github.io/charts
 helm repo update
 
-# Install from repo
-helm install my-tunnel zeroxsolutions/cf-tunnel
+# Search available charts
+helm search repo zeroxsolutions
 ```
 
-### Install the Chart
+### Install Charts
 
 ```bash
-# Option 1: Direct OCI install
-helm install my-tunnel oci://ghcr.io/zeroxsolutions/charts/cf-tunnel
-
-# Option 2: From added repository
+# Install cf-tunnel
 helm install my-tunnel zeroxsolutions/cf-tunnel
 
-# Install with custom values (either way works)
-helm install my-tunnel oci://ghcr.io/zeroxsolutions/charts/cf-tunnel \
-  --set cloudflared.token="your-tunnel-token" \
-  --set replicaCount=2
+# Install other charts as needed
+# helm install my-app zeroxsolutions/other-chart
 ```
 
-### Upgrade the Chart
+### Upgrade Charts
 
 ```bash
-helm upgrade my-tunnel oci://ghcr.io/zeroxsolutions/charts/cf-tunnel
+helm upgrade my-tunnel zeroxsolutions/cf-tunnel
 ```
 
-### Uninstall the Chart
+### Uninstall Charts
 
 ```bash
 helm uninstall my-tunnel
 ```
 
-## Configuration
+## Chart Details
 
-### Required Configuration
+### cf-tunnel
 
-The most important configuration is your Cloudflare Tunnel token:
+A Helm chart for deploying Cloudflare Tunnel (cloudflared) to Kubernetes clusters. Provides secure, outbound-only connections to Cloudflare's edge network.
 
-```yaml
-cloudflared:
-  token: "your-cloudflare-tunnel-token"
+**Key Features:**
+- Secure tunnel connections without opening inbound ports
+- Configurable resource limits and autoscaling
+- Built-in health checks and monitoring
+- Production-ready security contexts
+
+**Documentation:** See [cf-tunnel README](stable/cf-tunnel/README.md) for detailed configuration and usage examples.
+
+### common
+
+A library chart providing shared templates, functions, and common functionality for other charts in the repository.
+
+**Key Features:**
+- Reusable Helm templates and helper functions
+- Consistent labeling and naming conventions
+- Standardized security policies and RBAC
+- Common monitoring and health check configurations
+
+**Documentation:** See [common README](stable/common/README.md) for template details and usage.
+
+## Getting Started
+
+### For Users
+
+1. **Add the repository** (see Quick Start above)
+2. **Choose a chart** from the available options
+3. **Read the chart's README** for specific configuration details
+4. **Install and configure** according to your needs
+
+### For Developers
+
+1. **Fork the repository** to contribute
+2. **Follow the chart structure** established by existing charts
+3. **Use the common library** for shared functionality
+4. **Test your changes** thoroughly before submitting
+
+## Chart Structure
+
 ```
-
-### Common Configuration Options
-
-```yaml
-# Basic deployment settings
-replicaCount: 2
-image:
-  repository: cloudflare/cloudflared
-  tag: "2025.4.2"
-  pullPolicy: IfNotPresent
-
-# Resource allocation
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-  limits:
-    cpu: 500m
-    memory: 512Mi
-
-# Security settings
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  fsGroup: 1000
-
-# Autoscaling
-autoscaling:
-  enabled: true
-  minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 70
-```
-
-### Advanced Configuration
-
-```yaml
-# Custom environment variables
-extraEnvVars:
-  - name: TUNNEL_PROTOCOL
-    value: "http2"
-  - name: TUNNEL_ORIGIN_CA_POOL
-    value: "/etc/ssl/certs/ca-certificates.crt"
-
-# Custom arguments
-extraArgs:
-  - "--protocol"
-  - "http2"
-  - "--metrics"
-  - "0.0.0.0:9090"
-
-# Node affinity
-affinity:
-  nodeAffinity:
-    requiredDuringSchedulingIgnoredDuringExecution:
-      nodeSelectorTerms:
-      - matchExpressions:
-        - key: kubernetes.io/os
-          operator: In
-          values:
-          - linux
-
-# Pod disruption budget
-podDisruptionBudget:
-  enabled: true
-  minAvailable: 1
-```
-
-## Values Reference
-
-| Parameter | Description | Default |
-|-----------|-------------|---------|
-| `replicaCount` | Number of replicas | `1` |
-| `image.repository` | Container image repository | `cloudflare/cloudflared` |
-| `image.tag` | Container image tag | `2025.4.2` |
-| `image.pullPolicy` | Image pull policy | `IfNotPresent` |
-| `resources.requests.cpu` | CPU resource requests | `100m` |
-| `resources.requests.memory` | Memory resource requests | `128Mi` |
-| `autoscaling.enabled` | Enable horizontal pod autoscaling | `false` |
-| `autoscaling.minReplicas` | Minimum replicas for HPA | `1` |
-| `autoscaling.maxReplicas` | Maximum replicas for HPA | `3` |
-| `cloudflared.token` | Cloudflare Tunnel token | `""` (required) |
-
-For a complete list of configurable values, see the [values.yaml](stable/cf-tunnel/values.yaml) file.
-
-## Usage Examples
-
-### Basic Tunnel Setup
-
-```yaml
-# values-basic.yaml
-cloudflared:
-  token: "your-tunnel-token"
-
-replicaCount: 1
-resources:
-  requests:
-    cpu: 100m
-    memory: 128Mi
-```
-
-```bash
-helm install basic-tunnel oci://ghcr.io/zeroxsolutions/charts/cf-tunnel -f values-basic.yaml
-```
-
-### Production Setup with High Availability
-
-```yaml
-# values-production.yaml
-cloudflared:
-  token: "your-tunnel-token"
-
-replicaCount: 3
-resources:
-  requests:
-    cpu: 200m
-    memory: 256Mi
-  limits:
-    cpu: 1000m
-    memory: 1Gi
-
-autoscaling:
-  enabled: true
-  minReplicas: 2
-  maxReplicas: 10
-  targetCPUUtilizationPercentage: 70
-
-podSecurityContext:
-  runAsNonRoot: true
-  runAsUser: 1000
-  fsGroup: 1000
-
-securityContext:
-  capabilities:
-    drop:
-      - ALL
-  readOnlyRootFilesystem: true
-  allowPrivilegeEscalation: false
-```
-
-```bash
-helm install prod-tunnel oci://ghcr.io/zeroxsolutions/charts/cf-tunnel -f values-production.yaml
-```
-
-### Development Setup
-
-```yaml
-# values-dev.yaml
-cloudflared:
-  token: "your-dev-tunnel-token"
-
-replicaCount: 1
-resources:
-  requests:
-    cpu: 50m
-    memory: 64Mi
-
-extraArgs:
-  - "--loglevel"
-  - "debug"
-  - "--metrics"
-  - "0.0.0.0:9090"
-```
-
-```bash
-helm install dev-tunnel oci://ghcr.io/zeroxsolutions/charts/cf-tunnel -f values-dev.yaml
+stable/
+├── cf-tunnel/          # Cloudflare Tunnel chart
+│   ├── README.md       # Detailed documentation
+│   ├── Chart.yaml      # Chart metadata
+│   ├── values.yaml     # Default configuration
+│   └── templates/      # Kubernetes manifests
+├── common/             # Library chart
+│   ├── README.md       # Template documentation
+│   ├── Chart.yaml      # Library metadata
+│   └── templates/      # Shared templates
+└── [future-charts]/    # Additional charts
 ```
 
 ## Troubleshooting
 
-### Common Issues
+### General Issues
 
-1. **Pod fails to start**: Check if the Cloudflare token is valid and properly configured
-2. **High resource usage**: Adjust resource limits and requests in the values
-3. **Connection issues**: Verify network policies and firewall rules allow outbound connections
+1. **Repository not found**: Ensure the repository URL is correct and accessible
+2. **Chart not found**: Run `helm repo update` to refresh the repository
+3. **Installation fails**: Check the specific chart's README for requirements and configuration
 
-### Debug Commands
+### Getting Help
 
-```bash
-# Check pod status
-kubectl get pods -l app.kubernetes.io/name=cf-tunnel
-
-# View pod logs
-kubectl logs -l app.kubernetes.io/name=cf-tunnel
-
-# Describe pod for more details
-kubectl describe pod -l app.kubernetes.io/name=cf-tunnel
-
-# Check events
-kubectl get events --sort-by='.lastTimestamp'
-```
-
-### Health Checks
-
-The chart includes built-in health checks:
-
-- **Liveness Probe**: Ensures the container is running
-- **Readiness Probe**: Ensures the container is ready to serve traffic
+- **Chart-specific issues**: Check the individual chart's README for troubleshooting
+- **Repository issues**: Check [GitHub Issues](https://github.com/zeroxsolutions/charts/issues)
+- **General Helm issues**: Refer to [Helm documentation](https://helm.sh/docs/)
 
 ## Contributing
 
@@ -306,4 +161,13 @@ See [CHANGELOG.md](CHANGELOG.md) for a list of changes and version history.
 
 ---
 
-**Note**: This chart is maintained by [ZeroX Solutions](https://zeroxsolutions.com). For enterprise support and custom configurations, please contact us.
+**Note**: This chart is maintained by [ZeroX Solutions](https://zeroxsolutions.com). 
+
+## Repository Information
+
+- **Helm Repository**: `https://zeroxsolutions.github.io/charts`
+- **Available Charts**: `cf-tunnel`, `common`
+- **Repository Type**: Multi-chart Helm repository
+- **Hosting**: GitHub Pages
+
+For enterprise support and custom configurations, please contact us.
