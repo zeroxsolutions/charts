@@ -33,18 +33,11 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Package all charts
-        run: |
-          mkdir -p dist
-          
-          # Package all charts in stable directory
-          for CHDIR in stable/*/; do
-            if [ -f "$CHDIR/Chart.yaml" ]; then
-              echo "Packaging $(basename "$CHDIR")..."
-              helm dependency build "$CHDIR" || helm dependency update "$CHDIR"
-              helm package "$CHDIR" --destination dist
-            fi
-          done
+      - name: Download chart artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: chart-artifacts
+          path: dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
@@ -56,6 +49,10 @@ jobs:
           
           # Copy index.yaml to root for GitHub Pages
           cp dist/index.yaml index.yaml
+          
+          # Create charts directory and copy packages for GitHub Pages
+          mkdir -p charts
+          cp dist/*.tgz charts/
 
       - name: Upload to Pages
         uses: actions/upload-pages-artifact@v3
