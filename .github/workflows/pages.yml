@@ -23,11 +23,28 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Download chart artifacts
-        uses: actions/download-artifact@v4
+      - name: Setup Helm
+        uses: azure/setup-helm@v4
         with:
-          name: chart-artifacts
-          path: dist/
+          version: v3.14.4
+
+      - name: Checkout with depth 0
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Package all charts
+        run: |
+          mkdir -p dist
+          
+          # Package all charts in stable directory
+          for CHDIR in stable/*/; do
+            if [ -f "$CHDIR/Chart.yaml" ]; then
+              echo "Packaging $(basename "$CHDIR")..."
+              helm dependency build "$CHDIR" || helm dependency update "$CHDIR"
+              helm package "$CHDIR" --destination dist
+            fi
+          done
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
