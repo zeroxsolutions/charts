@@ -1,10 +1,10 @@
 name: Deploy Helm Repository to GitHub Pages
 
 on:
-  workflow_run:
-    workflows: ["Publish Helm charts to GHCR"]
-    types:
-      - completed
+  push:
+    tags:
+      - "v*.*.*"   # e.g. v1.2.3
+  workflow_dispatch:  # Allow manual trigger
 
 permissions:
   contents: write
@@ -13,7 +13,6 @@ permissions:
 
 jobs:
   deploy:
-    if: ${{ github.event.workflow_run.conclusion == 'success' }}
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -33,11 +32,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Download chart artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: chart-artifacts
-          path: dist/
+      - name: Package all charts
+        run: |
+          mkdir -p dist
+          
+          # Package all charts in stable directory
+          for CHDIR in stable/*/; do
+            if [ -f "$CHDIR/Chart.yaml" ]; then
+              echo "Packaging $(basename "$CHDIR")..."
+              helm dependency build "$CHDIR" || helm dependency update "$CHDIR"
+              helm package "$CHDIR" --destination dist
+            fi
+          done
+          
+          echo "Chart packages created:"
+          ls -la dist/
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
