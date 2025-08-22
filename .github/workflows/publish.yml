@@ -87,9 +87,28 @@ jobs:
 
             helm lint "$CHDIR"
             helm package "$CHDIR" --destination dist
-            helm push "dist/${NAME}-${VERSION}.tgz" "oci://${REGISTRY}/${OWNER}/${REPO}"
+            helm push "dist/${NAME}-${VERSION}.tgz" "oci://${REGISTRY}/${OWNER}/${REPO}/${NAME}"
             echo "::endgroup::"
           done
+
+      - name: Create Helm Repository Index
+        if: steps.changed.outputs.list != ''
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          # Create index.yaml from all charts in the repo
+          helm repo index dist/ --url https://${OWNER}.github.io/${REPO}
+          
+          echo "index.yaml created in dist/ directory"
+
+      - name: Upload chart artifacts
+        if: steps.changed.outputs.list != ''
+        uses: actions/upload-artifact@v4
+        with:
+          name: chart-artifacts
+          path: dist/
+          retention-days: 30
 
       - name: Create / Update GitHub Release with chart artifacts
         if: steps.changed.outputs.list != ''

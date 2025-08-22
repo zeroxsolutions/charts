@@ -1,0 +1,50 @@
+name: Deploy Helm Repository to GitHub Pages
+
+on:
+  workflow_run:
+    workflows: ["Publish Helm charts to GHCR"]
+    types:
+      - completed
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download chart artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: chart-artifacts
+          path: dist/
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Create Helm Repository Index
+        run: |
+          # Create index.yaml from all charts
+          helm repo index dist/ --url https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}
+          
+          # Copy index.yaml to root for GitHub Pages
+          cp dist/index.yaml index.yaml
+
+      - name: Upload to Pages
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4 
